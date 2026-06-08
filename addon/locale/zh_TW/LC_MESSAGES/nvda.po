@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: openccConverter 1.0.0\n"
+"Project-Id-Version: openccConverter 1.1.0\n"
 "Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
-"POT-Creation-Date: 2026-06-08 12:10+0800\n"
-"PO-Revision-Date: 2026-06-08 12:12+0800\n"
+"POT-Creation-Date: 2026-06-08 12:20+0800\n"
+"PO-Revision-Date: 2026-06-08 12:22+0800\n"
 "Last-Translator: Kevin Lin <kevin82222@gmail.com>\n"
 "Language-Team: Chinese (Taiwan)\n"
 "Language: zh_TW\n"
@@ -57,10 +57,11 @@ msgstr "轉換方向(&D):"
 msgid ""
 "Converts the selected text between Simplified and Traditional Chinese. Press "
 "twice quickly to convert the text on the clipboard instead. The result is "
-"spoken and copied to the clipboard."
+"copied to the clipboard; short results are spoken, while large results are "
+"announced as a character count."
 msgstr ""
-"在簡體與繁體中文之間轉換選取的文字。快速連按兩次則改為轉換剪貼簿的文字。轉換結"
-"果會朗讀出來,並複製到剪貼簿。"
+"在簡體與繁體中文之間轉換選取的文字。快速連按兩次則改為轉換剪貼簿的文字。結果會"
+"複製到剪貼簿;短文會朗讀出來,大量文字則改報字元數。"
 
 #. Translators: Reported when no text is selected.
 msgid "No selection"
@@ -77,6 +78,13 @@ msgstr "沒有可轉換的文字"
 #. Translators: Reported when conversion unexpectedly fails.
 msgid "Conversion failed"
 msgstr "轉換失敗"
+
+#. Translators: Announced after converting a large amount of text,
+#. instead of speaking the whole result. {0} is the character count.
+#, python-brace-format
+msgid "Converted and copied {0} character to the clipboard"
+msgid_plural "Converted and copied {0} characters to the clipboard"
+msgstr[0] "已將 {0} 個字元轉換並複製到剪貼簿"
 
 #. Add-on description
 #. Translators: Long description to be shown for this add-on on add-on information from add-on store
@@ -100,11 +108,13 @@ msgstr ""
 #. Brief changelog for this version
 #. Translators: what's new content for the add-on version to be shown in the add-on store
 msgid ""
-"First release.\n"
-"- Convert the selected text or the clipboard between Simplified and "
-"Traditional Chinese, fully offline.\n"
-"- Configurable conversion direction in the add-on settings."
+"Version 1.1.0:\n"
+"- A progress tone now sounds while text is being converted, so long "
+"conversions give feedback.\n"
+"- Large results (such as converting a whole book) are copied in full and "
+"announced as a character count, instead of being read out in full."
 msgstr ""
-"首次發行。\n"
-"- 完全離線,在簡體與繁體中文之間轉換選取的文字或剪貼簿內容。\n"
-"- 可在元件設定中切換轉換方向。"
+"1.1.0 版:\n"
+"- 轉換文字時會播放進度提示音,長時間轉換也有回饋。\n"
+"- 大量結果(例如轉換整本書)會完整複製到剪貼簿,並改以字元數提示,而非整段朗"
+"讀。"
