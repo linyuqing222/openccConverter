@@ -297,7 +297,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message(_("There is no text to convert"))
 			return
 		if self._converting:
-			# A conversion is already running; ignore overlapping triggers.
+			# A conversion is already running; tell the user instead of silently
+			# ignoring the trigger.
+			# Translators: Reported when a conversion is requested while one is still running.
+			ui.message(_("Still converting, please wait"))
 			return
 		self._converting = True
 		tones.beep(*self._START_BEEP)
@@ -335,7 +338,13 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# The full converted text is always copied; the source is never replaced
 		# in place.  Short results are spoken; large ones are summarised so we do
 		# not flood the speech buffer.
-		api.copyToClip(result)
+		try:
+			api.copyToClip(result)
+		except Exception:
+			log.error("openccConverter: copying to clipboard failed", exc_info=True)
+			# Translators: Reported when the converted text could not be copied to the clipboard.
+			ui.message(_("Could not copy the result to the clipboard"))
+			return
 		if len(result) <= self._MAX_CHARS_TO_SPEAK:
 			ui.message(result)
 		else:

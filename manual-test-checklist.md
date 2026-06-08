@@ -97,10 +97,15 @@ With the direction set to `s2twp`:
         912345 characters to the clipboard"** — it does **not** read the whole
         novel aloud.
   - [ ] Pasting (Ctrl+V) elsewhere yields the **full converted text**.
+- [ ] Convert **1,000,000+ characters** (e.g. paste a very large book, or the
+      same text twice) and press the layer + `c` → it converts and announces the
+      character count. It must **not** fail with "Conversion failed" (this
+      exercises the engine's parallel path, which runs serially on NVDA).
 - [ ] Convert a **short** selection/clipboard (a word or sentence) → NVDA speaks
       the converted text itself (no character-count summary).
-- [ ] Trigger another conversion **while a long one is still running** → the new
-      trigger is ignored (no overlapping conversion, no crash).
+- [ ] Trigger another conversion **while a long one is still running** → NVDA
+      says **"Still converting, please wait"** (no overlapping conversion, no
+      crash).
 
 ## Direction-sensitive behaviour
 

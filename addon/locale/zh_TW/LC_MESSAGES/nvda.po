@@ -89,6 +89,14 @@ msgstr "沒有可轉換的文字"
 msgid "Conversion failed"
 msgstr "轉換失敗"
 
+#. Translators: Reported when a conversion is requested while one is still running.
+msgid "Still converting, please wait"
+msgstr "正在轉換中,請稍後"
+
+#. Translators: Reported when the converted text could not be copied to the clipboard.
+msgid "Could not copy the result to the clipboard"
+msgstr "無法將結果複製到剪貼簿"
+
 #. Translators: Announced after converting a large amount of text,
 #. instead of speaking the whole result. {0} is the character count.
 #, python-brace-format
