@@ -7,7 +7,7 @@ name = "openccConverter"
 dynamic = ["version"]
 description = "NVDA add-on: offline Simplified/Traditional Chinese conversion"
 maintainers = [
-	{name = "NV Access", email = "info@nvaccess.org"},
+	{name = "Kevin Lin", email = "kevin82222@gmail.com"},
 ]
 requires-python = ">=3.13,<3.14"
 classifiers = [
