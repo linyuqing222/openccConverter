@@ -27,6 +27,51 @@ _VENDOR_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_vendor"
 if _VENDOR_DIR not in sys.path:
 	sys.path.insert(0, _VENDOR_DIR)
 
+
+def _ensure_multiprocessing() -> None:
+	"""Provide a minimal ``multiprocessing`` stand-in on runtimes that lack it.
+
+	NVDA ships a stripped-down, frozen CPython that omits the
+	``multiprocessing`` module.  ``opencc_purepy.core`` imports
+	``Pool``/``cpu_count`` at module load time purely to parallelize conversion
+	of very large inputs (text longer than ~1,000,000 characters), which never
+	happens for the short strings NVDA converts.  Rather than patch the vendored
+	engine -- which would be lost the next time it is re-synced from upstream --
+	we install a tiny stub into ``sys.modules`` so the engine's top-level import
+	succeeds and falls back to its serial code path.
+
+	On a normal Python interpreter (e.g. the test suite) the real module imports
+	fine and this function does nothing.
+	"""
+	try:
+		import multiprocessing  # noqa: F401
+		return
+	except ImportError:
+		pass
+
+	import types
+
+	stub = types.ModuleType("multiprocessing")
+
+	def cpu_count() -> int:
+		return 1
+
+	class Pool(object):
+		# The engine only constructs a Pool on its parallel path, which is
+		# gated behind input sizes NVDA never reaches.  Raise clearly if that
+		# assumption is ever violated instead of failing obscurely.
+		def __init__(self, *args, **kwargs):
+			raise NotImplementedError(
+				"multiprocessing is unavailable in this Python runtime"
+			)
+
+	stub.cpu_count = cpu_count
+	stub.Pool = Pool
+	sys.modules["multiprocessing"] = stub
+
+
+_ensure_multiprocessing()
+
 from opencc_purepy import OpenCC  # noqa: E402  (import after sys.path injection)
 
 
