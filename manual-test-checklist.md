@@ -64,6 +64,22 @@ With the direction set to `s2twp`:
 - [ ] With an empty / non-text clipboard, double-press → NVDA reports that the
       clipboard is empty (no crash).
 
+## Progress tone and large inputs
+
+- [ ] Convert any text: a short tone sounds the moment conversion starts.
+- [ ] Copy a **whole novel** (~1 MB, hundreds of thousands of characters) to the
+      clipboard, then double-press. While it converts (several seconds):
+  - [ ] A progress tone repeats roughly once per second.
+  - [ ] NVDA stays responsive (you can still arrow around / read elsewhere).
+  - [ ] On completion NVDA announces a count, e.g. **"Converted and copied
+        912345 characters to the clipboard"** — it does **not** read the whole
+        novel aloud.
+  - [ ] Pasting (Ctrl+V) elsewhere yields the **full converted text**.
+- [ ] Convert a **short** selection/clipboard (a word or sentence) → NVDA speaks
+      the converted text itself (no character-count summary).
+- [ ] Press the command again **while a long conversion is still running** → the
+      new press is ignored (no overlapping conversion, no crash).
+
 ## Direction-sensitive behaviour
 
 - [ ] Set direction to `s2tw`, convert `软件` → NVDA speaks **軟件**.

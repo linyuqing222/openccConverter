@@ -35,8 +35,11 @@ The command is bound to **`NVDA+shift+o`** by default:
 - **Press once** — converts the **selected text**.
 - **Press twice quickly** — converts the **clipboard text** instead.
 
-In both cases the result is spoken and placed on the clipboard; your document is
-not modified. You can change the gesture in NVDA's *Input Gestures* dialog, under
+In both cases the full converted text is placed on the clipboard; your document
+is not modified. A tone sounds while converting — handy for large inputs such as
+a whole book — and the result is then spoken: short results in full, large
+results as a character count (so a huge conversion isn't read out in its
+entirety). You can change the gesture in NVDA's *Input Gestures* dialog, under
 the **OpenCC Converter** category.
 
 ## Settings
