@@ -34,41 +34,63 @@ verified automatically — see `tests/` and run `python -m pytest tests/ -s -v`.
 ## Input Gestures
 
 - [ ] Open *NVDA menu → Preferences → Input Gestures*. An **OpenCC Converter**
-      category is present with the conversion command.
-- [ ] The default gesture is **NVDA+shift+o**.
-- [ ] The command can be reassigned to another gesture, and the new gesture
-      works after saving.
+      category is present, listing the command-layer gesture and (unassigned by
+      default) the convert-selection, convert-clipboard and swap-direction
+      commands.
+- [ ] The default gesture for the command layer is **NVDA+shift+c**.
+- [ ] The layer gesture can be reassigned to another gesture, and the new
+      gesture works after saving.
 
-## Convert selected text (single press)
+## Command layer
+
+- [ ] Press **NVDA+shift+c**: a short tone sounds (the layer is armed).
+- [ ] While armed, press an **unrelated key** (e.g. `x` or an arrow): a low tone
+      sounds, the layer is dismissed, and no conversion happens.
+- [ ] After dismissing, normal typing/navigation works again (the layer does not
+      stay stuck on).
+
+## Convert selected text (layer, then `s`)
 
 With the direction set to `s2twp`:
 
-- [ ] In an editable document, type `软件内存`, select it, and press
-      **NVDA+shift+o once**. NVDA speaks **軟體記憶體**.
+- [ ] In an editable document, type `软件内存`, select it, press
+      **NVDA+shift+c** then **`s`**. NVDA speaks **軟體記憶體**.
 - [ ] The clipboard now contains **軟體記憶體** (paste with Ctrl+V to confirm).
 - [ ] The **original selected text is unchanged** in the document (no in-place
       replacement).
-- [ ] Select `头发` and press once → NVDA speaks **頭髮**.
-- [ ] Select `发展` and press once → NVDA speaks **發展**.
-- [ ] With nothing selected, press once → NVDA reports that there is no
-      selection (no crash).
+- [ ] Select `头发`, press the layer then `s` → NVDA speaks **頭髮**.
+- [ ] Select `发展`, press the layer then `s` → NVDA speaks **發展**.
+- [ ] With nothing selected, press the layer then `s` → NVDA reports that there
+      is no selection (no crash).
 
-## Convert clipboard text (double press)
+## Convert clipboard text (layer, then `c`)
 
-- [ ] Copy `简体字` to the clipboard (Ctrl+C). Press **NVDA+shift+o twice
-      quickly**. NVDA speaks **簡體字** and the clipboard now holds **簡體字**.
-- [ ] Copy `内存` to the clipboard and double-press → NVDA speaks **記憶體**.
-- [ ] Confirm that a double press converts the **clipboard** (not the current
-      selection): select some text, copy *different* text, then double-press;
-      the **clipboard** text is the one that gets converted.
-- [ ] With an empty / non-text clipboard, double-press → NVDA reports that the
-      clipboard is empty (no crash).
+- [ ] Copy `简体字` to the clipboard (Ctrl+C). Press **NVDA+shift+c** then
+      **`c`**. NVDA speaks **簡體字** and the clipboard now holds **簡體字**.
+- [ ] Copy `内存`, press the layer then `c` → NVDA speaks **記憶體**.
+- [ ] Confirm `c` converts the **clipboard** (not the current selection): select
+      some text, copy *different* text, then press the layer + `c`; the
+      **clipboard** text is the one that gets converted.
+- [ ] With an empty / non-text clipboard, press the layer then `c` → NVDA
+      reports that the clipboard is empty (no crash).
+
+## Swap direction (layer, then `w`)
+
+- [ ] Set direction to `s2twp`. Select `軟體`, press **NVDA+shift+c** then
+      **`w`**. NVDA announces the new direction
+      (**Traditional Chinese (Taiwan) → Simplified Chinese (with phrases)**) and
+      then speaks **软件** (the selection converted in the new direction).
+- [ ] Open Settings → the **Conversion direction** now shows the swapped
+      direction (swap and the panel share the same setting).
+- [ ] Press the layer + `w` again with no selection → NVDA only announces the
+      direction (back to `s2twp`); it does **not** report "no selection".
+- [ ] Swapping twice returns to the original direction.
 
 ## Progress tone and large inputs
 
 - [ ] Convert any text: a short tone sounds the moment conversion starts.
 - [ ] Copy a **whole novel** (~1 MB, hundreds of thousands of characters) to the
-      clipboard, then double-press. While it converts (several seconds):
+      clipboard, then press the layer + `c`. While it converts (several seconds):
   - [ ] A progress tone repeats roughly once per second.
   - [ ] NVDA stays responsive (you can still arrow around / read elsewhere).
   - [ ] On completion NVDA announces a count, e.g. **"Converted and copied
@@ -77,8 +99,8 @@ With the direction set to `s2twp`:
   - [ ] Pasting (Ctrl+V) elsewhere yields the **full converted text**.
 - [ ] Convert a **short** selection/clipboard (a word or sentence) → NVDA speaks
       the converted text itself (no character-count summary).
-- [ ] Press the command again **while a long conversion is still running** → the
-      new press is ignored (no overlapping conversion, no crash).
+- [ ] Trigger another conversion **while a long one is still running** → the new
+      trigger is ignored (no overlapping conversion, no crash).
 
 ## Direction-sensitive behaviour
 

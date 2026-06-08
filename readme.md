@@ -9,8 +9,8 @@ internet connection is needed.
 
 ## Features
 
-- Convert the **selected text** with a single press, or the **clipboard text** by
-  pressing **twice quickly**.
+- Convert the **selected text** or the **clipboard text** from a quick command
+  layer, and **swap** the conversion direction on the fly.
 - The result is **spoken** and **copied to the clipboard**; your original text is
   **never replaced in place**.
 - Convert in either direction — Simplified → Traditional or Traditional →
@@ -30,17 +30,23 @@ internet connection is needed.
 
 ## Usage
 
-The command is bound to **`NVDA+shift+o`** by default:
+Press **`NVDA+shift+c`** to open the command layer (you'll hear a tone), then
+press one key:
 
-- **Press once** — converts the **selected text**.
-- **Press twice quickly** — converts the **clipboard text** instead.
+- **`s`** — convert the **selected text**.
+- **`c`** — convert the **clipboard text**.
+- **`w`** — **swap** the conversion direction.
 
-In both cases the full converted text is placed on the clipboard; your document
-is not modified. A tone sounds while converting — handy for large inputs such as
-a whole book — and the result is then spoken: short results in full, large
-results as a character count (so a huge conversion isn't read out in its
-entirety). You can change the gesture in NVDA's *Input Gestures* dialog, under
-the **OpenCC Converter** category.
+Any other key dismisses the layer. The full converted text is placed on the
+clipboard; your document is never modified. A tone sounds while converting —
+handy for large inputs such as a whole book — and the result is then spoken:
+short results in full, large results as a character count (so a huge conversion
+isn't read out in its entirety).
+
+Swapping the direction (**`w`**) announces the new direction and, if you have
+text selected, converts that selection in the new direction. You can reassign
+the layer gesture in NVDA's *Input Gestures* dialog, under the **OpenCC
+Converter** category.
 
 ## Settings
 
