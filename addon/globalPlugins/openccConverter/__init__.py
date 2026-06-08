@@ -5,7 +5,12 @@
 # See the file COPYING.txt for more details.
 
 """NVDA global plugin offering offline Simplified <-> Traditional Chinese
-conversion of the selected text (single press) or the clipboard (double press).
+conversion.
+
+The conversion commands live in a short-lived command layer: press the layer
+gesture, then ``s`` to convert the current selection or ``c`` to convert the
+clipboard.  A separate gesture swaps the conversion direction and, if there is a
+selection, converts it in the new direction.
 
 The full result is always copied to the clipboard (the source is never replaced
 in place); short results are spoken, while large results are announced as a
@@ -15,9 +20,9 @@ the bundled, fully offline OpenCC engine.
 """
 
 import threading
+from functools import wraps
 
 import globalPluginHandler
-import scriptHandler
 from scriptHandler import script
 import api
 import ui
@@ -26,6 +31,7 @@ import core
 import queueHandler
 import textInfos
 import tones
+import speech
 import browseMode
 import addonHandler
 import wx
@@ -35,6 +41,23 @@ from logHandler import log
 from . import opencc_core
 
 addonHandler.initTranslation()
+
+
+def finally_(func, final):
+	"""Wrap ``func`` so ``final`` is always called afterwards.
+
+	Used by the command layer: every script run while the layer is open is
+	wrapped so the layer is torn down once the next key has been handled.
+	"""
+
+	@wraps(func)
+	def wrapper(*args, **kwargs):
+		try:
+			func(*args, **kwargs)
+		finally:
+			final()
+
+	return wrapper
 
 
 #: Configuration section / key used in ``nvda.ini`` (``config.conf``).
@@ -97,11 +120,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	# Translators: Input gestures category for this add-on.
 	scriptCategory = _("OpenCC Converter")
 
-	#: How long, in milliseconds, to wait before treating a press as a final
-	#: single press.  It must exceed NVDA's ~0.5s multi-press window so a second
-	#: press can cancel the deferred single-press (selection) conversion.
-	_MULTI_PRESS_DEFER_MS = 600
-
+	#: Tone (Hz, ms) played when the command layer is armed and waiting for the
+	#: next key (selection or clipboard).
+	_LAYER_BEEP = (880, 40)
+	#: Tone (Hz, ms) played when the layer is dismissed by an unrelated key.
+	_CANCEL_BEEP = (160, 80)
 	#: Tone (Hz, ms) played the moment a conversion starts, as an immediate cue.
 	_START_BEEP = (660, 80)
 	#: Tone (Hz, ms) repeated while a conversion is still running.
@@ -115,15 +138,17 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self._pendingTimer = None
 		self._progressTimer = None
 		self._converting = False
 		self._terminated = False
+		self._inLayer = False
 		settingsDialogs.NVDASettingsDialog.categoryClasses.append(OpenCCSettingsPanel)
 
 	def terminate(self):
 		self._terminated = True
-		self._cancelPending()
+		if self._inLayer:
+			self.clearGestureBindings()
+			self._inLayer = False
 		self._cancelProgress()
 		try:
 			settingsDialogs.NVDASettingsDialog.categoryClasses.remove(OpenCCSettingsPanel)
@@ -131,43 +156,95 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			pass
 		super().terminate()
 
-	# --- gesture handling ----------------------------------------------------
+	# --- command layer -------------------------------------------------------
+	#
+	# Rather than overload one gesture with single/double-press detection (which
+	# needs a timeout and risks acting on the wrong target), the conversion
+	# commands live in a short-lived layer modelled on the InstantTranslate
+	# add-on: the layer gesture arms a set of one-shot sub-gestures, and the very
+	# next key either runs a command or dismisses the layer.
+
+	def getScript(self, gesture):
+		if not self._inLayer:
+			return super().getScript(gesture)
+		boundScript = super().getScript(gesture)
+		if not boundScript:
+			# An unrelated key dismisses the layer (and is swallowed).
+			boundScript = finally_(self._layerCancel, self._exitLayer)
+		return finally_(boundScript, self._exitLayer)
+
+	def _exitLayer(self):
+		self._inLayer = False
+		self.clearGestureBindings()
+		self.bindGestures(self.__gestures)
+
+	def _layerCancel(self, gesture):
+		tones.beep(*self._CANCEL_BEEP)
 
 	@script(
-		# Translators: Description of the conversion command shown in Input Gestures.
+		# Translators: Description of the command-layer gesture shown in Input Gestures.
 		description=_(
-			"Converts the selected text between Simplified and Traditional Chinese. "
-			"Press twice quickly to convert the text on the clipboard instead. "
-			"The result is copied to the clipboard; short results are spoken, while "
-			"large results are announced as a character count."
+			"Enters the OpenCC Converter command layer. Then press s to convert the "
+			"selected text, c to convert the clipboard text, or w to swap the "
+			"conversion direction. Any other key cancels."
 		),
-		gesture="kb:NVDA+shift+o",
 	)
-	def script_convert(self, gesture):
-		repeatCount = scriptHandler.getLastScriptRepeatCount()
-		if repeatCount == 0:
-			# Either a single press or the first of a double press.  Defer the
-			# selection conversion; a second press will cancel it.
-			self._cancelPending()
-			self._pendingTimer = core.callLater(self._MULTI_PRESS_DEFER_MS, self._convertSelection)
-		elif repeatCount == 1:
-			# Second press inside the multi-press window: convert the clipboard.
-			self._cancelPending()
-			self._convertClipboard()
-		# Higher repeat counts are ignored.
+	def script_convertLayer(self, gesture):
+		if self._inLayer:
+			# A second press of the layer gesture just cancels; getScript has
+			# already wrapped this call so the layer is torn down afterwards.
+			tones.beep(*self._CANCEL_BEEP)
+			return
+		self.bindGestures(self.__layerGestures)
+		self._inLayer = True
+		tones.beep(*self._LAYER_BEEP)
 
-	def _cancelPending(self):
-		if self._pendingTimer is not None:
-			try:
-				self._pendingTimer.Stop()
-			except Exception:
-				pass
-			self._pendingTimer = None
+	@script(
+		# Translators: Description of the convert-selection command shown in Input Gestures.
+		description=_(
+			"Converts the selected text between Simplified and Traditional Chinese and "
+			"copies the result to the clipboard."
+		),
+	)
+	def script_convertSelection(self, gesture):
+		self._convertSelection()
+
+	@script(
+		# Translators: Description of the convert-clipboard command shown in Input Gestures.
+		description=_(
+			"Converts the clipboard text between Simplified and Traditional Chinese and "
+			"copies the result back to the clipboard."
+		),
+	)
+	def script_convertClipboard(self, gesture):
+		self._convertClipboard()
+
+	@script(
+		# Translators: Description of the swap-direction command shown in Input Gestures.
+		description=_(
+			"Swaps the conversion direction (for example Simplified to Traditional "
+			"becomes Traditional to Simplified), announces the new direction, and "
+			"converts the current selection in that direction."
+		),
+	)
+	def script_swapDirection(self, gesture):
+		self._swap()
+
+	#: Gestures active only while the command layer is open.
+	__layerGestures = {
+		"kb:s": "convertSelection",
+		"kb:c": "convertClipboard",
+		"kb:w": "swapDirection",
+	}
+
+	#: Entry-level gestures, rebound after the layer is torn down.
+	__gestures = {
+		"kb:NVDA+shift+c": "convertLayer",
+	}
 
 	# --- conversion actions --------------------------------------------------
 
 	def _convertSelection(self):
-		self._pendingTimer = None
 		text = self._getSelectedText()
 		if text is None:
 			# Translators: Reported when no text is selected.
@@ -182,6 +259,41 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message(_("The clipboard is empty"))
 			return
 		self._beginConversion(text)
+
+	def _swap(self):
+		"""Swap the configured conversion direction and persist it.
+
+		Modelled on the InstantTranslate "swap languages" command: the new
+		direction is written straight to the configuration (so the settings panel
+		stays in sync), announced, and -- if there is a current selection -- the
+		selection is converted in the new direction.  When speech is in on-demand
+		mode the direction is changed silently, without an incidental conversion.
+		"""
+		current = _currentConversion()
+		try:
+			newConversion = opencc_core.reverse(current)
+		except ValueError:
+			newConversion = opencc_core.DEFAULT_CONVERSION
+		config.conf[CONFIG_SECTION]["conversion"] = newConversion
+		ui.message(CONVERSION_LABELS[newConversion])
+		if not self._shouldAutoConvert():
+			return
+		text = self._getSelectedText()
+		if text and text.strip():
+			# _beginConversion re-reads the (now swapped) direction from config.
+			self._beginConversion(text)
+
+	def _shouldAutoConvert(self) -> bool:
+		"""Return ``False`` when speech is in on-demand mode.
+
+		In that mode the user has opted out of incidental speech, so a swap should
+		quietly change the direction without also speaking a conversion.  Older
+		NVDA releases without on-demand mode always return ``True``.
+		"""
+		try:
+			return speech.getState().speechMode != speech.SpeechMode.onDemand
+		except (AttributeError, RuntimeError):
+			return True
 
 	def _beginConversion(self, text: str):
 		"""Start converting ``text`` on a background thread, with audible cues.
