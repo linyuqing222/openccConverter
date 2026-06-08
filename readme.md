@@ -54,9 +54,9 @@ example 软件 → 軟體, 内存 → 記憶體).
 
 OpenCC Converter is licensed under the **GNU General Public License, version 2 or
 later** (see [COPYING.txt](COPYING.txt)). It bundles, unmodified, the pure-Python
-[opencc-python-reimplemented](https://github.com/yichen0831/opencc-python) engine
-and [OpenCC](https://github.com/BYVoid/OpenCC) dictionary data, both under the
-**Apache License 2.0**.
+[opencc-purepy](https://github.com/laisuk/opencc_purepy) engine (**MIT License**)
+together with [OpenCC](https://github.com/BYVoid/OpenCC) dictionary data (**Apache
+License 2.0**).
 
 Developers: see [DEVELOPMENT.md](DEVELOPMENT.md) for building, testing, and
 translating.

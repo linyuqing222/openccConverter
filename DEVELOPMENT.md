@@ -10,8 +10,9 @@ All conversion logic lives in
 dependency on NVDA**, so it can be unit-tested with a plain Python interpreter.
 The NVDA global plugin (`__init__.py`) only handles gestures, the settings panel,
 speech, and the clipboard, delegating the actual conversion to the core. The
-OpenCC engine and dictionaries are vendored, unmodified, under
-`addon/globalPlugins/openccConverter/_vendor/opencc/`.
+pure-Python [opencc-purepy](https://github.com/laisuk/opencc_purepy) engine (MIT)
+and its OpenCC dictionaries (Apache-2.0) are vendored, unmodified, under
+`addon/globalPlugins/openccConverter/_vendor/opencc_purepy/`.
 
 ## Run the tests
 
