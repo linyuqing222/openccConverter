@@ -111,6 +111,19 @@ exclude = [
 	"__pycache__",
 	".venv",
 	"site_scons",
+	# The NVDA global plugin imports the NVDA runtime (globalPluginHandler, api,
+	# ui, ...), which is only available when the NVDA source tree is checked out
+	# alongside this repo (see `extraPaths` -> ../nvda/source). CI has no such
+	# checkout, so pyright cannot resolve those modules there. The plugin package
+	# also vendors the third-party OpenCC engine (excluded below). Type-checking
+	# the plugin is done in the editor with the NVDA source available; the
+	# conversion logic itself is covered by the NVDA-independent test suite.
+	"addon/globalPlugins",
+	# The test suite imports the NVDA-independent core as a top-level module via a
+	# sys.path shim (see tests/conftest.py); that module lives under the excluded
+	# plugin package, so pyright cannot resolve it here. The tests are exercised
+	# by pytest, not pyright.
+	"tests",
 	# Bundled, unmodified third-party engine (Apache 2.0); not our code to type-check.
 	"addon/globalPlugins/openccConverter/_vendor",
 	# When excluding concrete paths relative to a directory,
