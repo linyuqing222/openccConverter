@@ -46,6 +46,10 @@ Repository = "https://github.com/nvaccess/addonTemplate"
 [tool.ruff]
 line-length = 110
 
+# Honor `exclude` even when pre-commit passes vendored files as explicit paths,
+# so the bundled third-party engine under `_vendor` is never linted/formatted.
+force-exclude = true
+
 builtins = [
 	# translation lookup
 	"_",
