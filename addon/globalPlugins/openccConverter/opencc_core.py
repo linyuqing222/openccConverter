@@ -9,13 +9,13 @@
 This module deliberately has **no dependency on NVDA**, so it can be imported
 and unit-tested on any platform with a plain Python interpreter.  All Chinese
 conversion is performed fully offline by the bundled, pure-Python
-``opencc-python-reimplemented`` engine (Apache License 2.0), which ships its
-own dictionaries under ``_vendor/opencc``.
+``opencc-purepy`` engine (MIT License) under ``_vendor/opencc_purepy``, which
+ships the OpenCC dictionaries (Apache License 2.0, see ``dicts/LICENSE``).
 
 The engine is imported by injecting the ``_vendor`` directory onto ``sys.path``
-and importing the top-level ``opencc`` package.  This keeps the import working
-both when the file is loaded as part of the NVDA add-on package and when it is
-imported as a stand-alone module by the test suite.
+and importing the top-level ``opencc_purepy`` package.  This keeps the import
+working both when the file is loaded as part of the NVDA add-on package and
+when it is imported as a stand-alone module by the test suite.
 """
 
 import os
@@ -27,7 +27,7 @@ _VENDOR_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "_vendor"
 if _VENDOR_DIR not in sys.path:
 	sys.path.insert(0, _VENDOR_DIR)
 
-from opencc import OpenCC  # noqa: E402  (import after sys.path injection)
+from opencc_purepy import OpenCC  # noqa: E402  (import after sys.path injection)
 
 
 #: The conversion directions exposed to the user, in the order they should
@@ -52,9 +52,10 @@ CONVERSION_CODES: "tuple[str, ...]" = tuple(CONVERSIONS.keys())
 #: vocabulary (e.g. 软件 -> 軟體, 内存 -> 記憶體).
 DEFAULT_CONVERSION = "s2twp"
 
-# OpenCC instances load every dictionary for a direction into memory on
-# construction, so they are cached and reused.  A lock guards the cache because
-# NVDA may invoke conversion from more than one thread.
+# Engines are cached and reused.  opencc-purepy builds each direction's
+# dictionary union once and shares it process-wide, so construction is cheap;
+# caching just avoids repeating even that small setup.  A lock guards the cache
+# because NVDA may invoke conversion from more than one thread.
 _engine_cache: "dict[str, OpenCC]" = {}
 _cache_lock = threading.Lock()
 
