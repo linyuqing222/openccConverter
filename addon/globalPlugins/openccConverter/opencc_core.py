@@ -162,7 +162,7 @@ def _get_engine(conversion: str) -> OpenCC:
 	"""
 	if not is_supported(conversion):
 		raise ValueError(
-			"Unsupported conversion %r; expected one of %s" % (conversion, ", ".join(CONVERSION_CODES))
+			"Unsupported conversion %r; expected one of %s" % (conversion, ", ".join(CONVERSION_CODES)),
 		)
 	engine = _engine_cache.get(conversion)
 	if engine is None:

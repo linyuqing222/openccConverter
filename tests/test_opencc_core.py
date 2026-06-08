@@ -64,7 +64,7 @@ def test_print_acceptance_evidence():
 	print(
 		f"same input differs: {sample}: "
 		f"s2tw={opencc_core.convert(sample, 's2tw')}  "
-		f"s2twp={opencc_core.convert(sample, 's2twp')}"
+		f"s2twp={opencc_core.convert(sample, 's2twp')}",
 	)
 
 

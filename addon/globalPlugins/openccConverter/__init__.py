@@ -107,7 +107,9 @@ class OpenCCSettingsPanel(settingsDialogs.SettingsPanel):
 		labels = [CONVERSION_LABELS[code] for code in self._codes]
 		# Translators: Label for the conversion direction combo box in the settings panel.
 		self._conversionChoice = sHelper.addLabeledControl(
-			_("Conversion &direction:"), wx.Choice, choices=labels
+			_("Conversion &direction:"),
+			wx.Choice,
+			choices=labels,
 		)
 		current = _currentConversion()
 		self._conversionChoice.SetSelection(self._codes.index(current))
@@ -185,7 +187,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		# Translators: Description of the command-layer gesture shown in Input Gestures.
 		description=_(
 			"OpenCC Converter command layer. Then press s to convert the selection, "
-			"c to convert the clipboard, or w to swap the direction."
+			"c to convert the clipboard, or w to swap the direction.",
 		),
 	)
 	def script_convertLayer(self, gesture):
@@ -356,7 +358,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 					"Converted and copied {0} character to the clipboard",
 					"Converted and copied {0} characters to the clipboard",
 					count,
-				).format(count)
+				).format(count),
 			)
 
 	def _cancelProgress(self):
