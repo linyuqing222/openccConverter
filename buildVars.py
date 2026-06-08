@@ -24,16 +24,16 @@ addon_info = AddonInfo(
 	addon_description=_("""Offline Simplified/Traditional Chinese conversion.
 Converts the selected text (single press) or the clipboard text (double press)
 between Simplified and Traditional Chinese and speaks the result, which is also
-copied to the clipboard. The conversion direction (s2t, s2tw, s2twp, t2s, tw2s,
-tw2sp) is configurable. Everything runs fully offline using a bundled,
-pure-Python OpenCC engine; no internet connection is required."""),
+copied to the clipboard. The conversion direction is configurable in the add-on
+settings. Everything runs fully offline using a bundled, pure-Python OpenCC
+engine; no internet connection is required."""),
 	# version
 	addon_version="1.0.0",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
 	addon_changelog=_("""First release.
 - Convert the selected text or the clipboard between Simplified and Traditional Chinese, fully offline.
-- Configurable conversion direction: s2t, s2tw, s2twp, t2s, tw2s, tw2sp."""),
+- Configurable conversion direction in the add-on settings."""),
 	# Author(s)
 	addon_author="Kevin Lin <kevin82222@gmail.com>",
 	# URL for the add-on documentation support

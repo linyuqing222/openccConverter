@@ -13,16 +13,9 @@ internet connection is needed.
   pressing **twice quickly**.
 - The result is **spoken** and **copied to the clipboard**; your original text is
   **never replaced in place**.
-- Six conversion directions to choose from:
-
-  | Code    | Direction                                                          |
-  | ------- | ------------------------------------------------------------------ |
-  | `s2t`   | Simplified → Traditional Chinese                                   |
-  | `s2tw`  | Simplified → Traditional Chinese (Taiwan)                          |
-  | `s2twp` | Simplified → Traditional Chinese (Taiwan, with phrases) *(default)* |
-  | `t2s`   | Traditional → Simplified Chinese                                   |
-  | `tw2s`  | Traditional Chinese (Taiwan) → Simplified Chinese                  |
-  | `tw2sp` | Traditional Chinese (Taiwan) → Simplified Chinese (with phrases)   |
+- Convert in either direction — Simplified → Traditional or Traditional →
+  Simplified, including Taiwan-standard and phrase-level variants — selectable in
+  the add-on settings.
 
 ## Requirements
 
@@ -50,9 +43,9 @@ the **OpenCC Converter** category.
 
 Choose the conversion direction in
 *NVDA menu → Preferences → Settings → OpenCC Converter*. Your choice is saved and
-persists across restarts. The default is `s2twp` (Simplified → Traditional,
-Taiwan, with phrases), which produces idiomatic Taiwanese vocabulary (for example
-软件 → 軟體, 内存 → 記憶體).
+persists across restarts. The default is **Simplified → Traditional Chinese
+(Taiwan, with phrases)**, which produces idiomatic Taiwanese vocabulary (for
+example 软件 → 軟體, 内存 → 記憶體).
 
 ## License
 
