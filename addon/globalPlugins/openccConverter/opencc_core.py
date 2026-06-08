@@ -31,8 +31,8 @@ from opencc_purepy import OpenCC  # noqa: E402  (import after sys.path injection
 
 
 #: The conversion directions exposed to the user, in the order they should
-#: appear in the settings panel.  Keys are OpenCC config names (one per JSON
-#: file shipped under ``_vendor/opencc/config``); values are short English
+#: appear in the settings panel.  Keys are OpenCC config names (built-in
+#: opencc-purepy configurations such as ``s2twp``); values are short English
 #: descriptions used by the test-suite and as a fallback when NVDA's gettext
 #: translations are unavailable.
 CONVERSIONS: "dict[str, str]" = {
