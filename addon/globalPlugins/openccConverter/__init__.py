@@ -7,10 +7,14 @@
 """NVDA global plugin offering offline Simplified <-> Traditional Chinese
 conversion of the selected text (single press) or the clipboard (double press).
 
-The result is always spoken and copied to the clipboard; the source is never
-replaced in place.  All conversion is delegated to :mod:`opencc_core`, a
-NVDA-independent module wrapping the bundled, fully offline OpenCC engine.
+The full result is always copied to the clipboard (the source is never replaced
+in place); short results are spoken, while large results are announced as a
+character count.  Conversion runs on a background thread with an audible progress
+tone, and is delegated to :mod:`opencc_core`, a NVDA-independent module wrapping
+the bundled, fully offline OpenCC engine.
 """
+
+import threading
 
 import globalPluginHandler
 import scriptHandler
@@ -19,7 +23,9 @@ import api
 import ui
 import config
 import core
+import queueHandler
 import textInfos
+import tones
 import browseMode
 import addonHandler
 import wx
@@ -96,13 +102,29 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	#: press can cancel the deferred single-press (selection) conversion.
 	_MULTI_PRESS_DEFER_MS = 600
 
+	#: Tone (Hz, ms) played the moment a conversion starts, as an immediate cue.
+	_START_BEEP = (660, 80)
+	#: Tone (Hz, ms) repeated while a conversion is still running.
+	_PROGRESS_BEEP = (500, 100)
+	#: Gap, in milliseconds, between progress beeps.
+	_PROGRESS_INTERVAL_MS = 800
+	#: Results no longer than this are spoken verbatim; longer results are
+	#: announced as a character count instead, to avoid flooding the speech
+	#: buffer (e.g. when converting a whole book from the clipboard).
+	_MAX_CHARS_TO_SPEAK = 1000
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self._pendingTimer = None
+		self._progressTimer = None
+		self._converting = False
+		self._terminated = False
 		settingsDialogs.NVDASettingsDialog.categoryClasses.append(OpenCCSettingsPanel)
 
 	def terminate(self):
+		self._terminated = True
 		self._cancelPending()
+		self._cancelProgress()
 		try:
 			settingsDialogs.NVDASettingsDialog.categoryClasses.remove(OpenCCSettingsPanel)
 		except ValueError:
@@ -116,7 +138,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		description=_(
 			"Converts the selected text between Simplified and Traditional Chinese. "
 			"Press twice quickly to convert the text on the clipboard instead. "
-			"The result is spoken and copied to the clipboard."
+			"The result is copied to the clipboard; short results are spoken, while "
+			"large results are announced as a character count."
 		),
 		gesture="kb:NVDA+shift+o",
 	)
@@ -150,7 +173,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			# Translators: Reported when no text is selected.
 			ui.message(_("No selection"))
 			return
-		self._convertAndReport(text)
+		self._beginConversion(text)
 
 	def _convertClipboard(self):
 		text = self._getClipboardText()
@@ -158,24 +181,81 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			# Translators: Reported when the clipboard contains no convertible text.
 			ui.message(_("The clipboard is empty"))
 			return
-		self._convertAndReport(text)
+		self._beginConversion(text)
 
-	def _convertAndReport(self, text: str):
+	def _beginConversion(self, text: str):
+		"""Start converting ``text`` on a background thread, with audible cues.
+
+		The conversion itself can take several seconds for very large inputs
+		(e.g. a whole book), so it runs off the main thread to keep NVDA
+		responsive.  An immediate tone acknowledges the request and a progress
+		tone repeats until the conversion finishes.
+		"""
 		if not text or not text.strip():
 			# Translators: Reported when there is no text to convert.
 			ui.message(_("There is no text to convert"))
 			return
+		if self._converting:
+			# A conversion is already running; ignore overlapping triggers.
+			return
+		self._converting = True
+		tones.beep(*self._START_BEEP)
+		self._progressTimer = core.callLater(self._PROGRESS_INTERVAL_MS, self._onProgressTick)
+		conversion = _currentConversion()
+		threading.Thread(target=self._conversionWorker, args=(text, conversion), daemon=True).start()
+
+	def _onProgressTick(self):
+		# Runs on the main thread; reschedules itself until conversion finishes.
+		if not self._converting:
+			return
+		tones.beep(*self._PROGRESS_BEEP)
+		self._progressTimer = core.callLater(self._PROGRESS_INTERVAL_MS, self._onProgressTick)
+
+	def _conversionWorker(self, text: str, conversion: str):
+		# Runs on a background thread.  Only the pure, NVDA-independent core runs
+		# here; the result is handed back to the main thread for reporting.
 		try:
-			result = opencc_core.convert(text, _currentConversion())
+			result, failed = opencc_core.convert(text, conversion), False
 		except Exception:
 			log.error("openccConverter: conversion failed", exc_info=True)
+			result, failed = None, True
+		queueHandler.queueFunction(queueHandler.eventQueue, self._finishConversion, result, failed)
+
+	def _finishConversion(self, result, failed: bool):
+		# Runs on the main thread (marshalled via queueHandler).
+		self._cancelProgress()
+		self._converting = False
+		if self._terminated:
+			return
+		if failed:
 			# Translators: Reported when conversion unexpectedly fails.
 			ui.message(_("Conversion failed"))
 			return
-		# Copy to the clipboard first, then speak/braille the converted result.
-		# The source text is never replaced in place.
+		# The full converted text is always copied; the source is never replaced
+		# in place.  Short results are spoken; large ones are summarised so we do
+		# not flood the speech buffer.
 		api.copyToClip(result)
-		ui.message(result)
+		if len(result) <= self._MAX_CHARS_TO_SPEAK:
+			ui.message(result)
+		else:
+			count = len(result)
+			ui.message(
+				ngettext(
+					# Translators: Announced after converting a large amount of text,
+					# instead of speaking the whole result. {0} is the character count.
+					"Converted and copied {0} character to the clipboard",
+					"Converted and copied {0} characters to the clipboard",
+					count,
+				).format(count)
+			)
+
+	def _cancelProgress(self):
+		if self._progressTimer is not None:
+			try:
+				self._progressTimer.Stop()
+			except Exception:
+				pass
+			self._progressTimer = None
 
 	# --- text retrieval helpers ----------------------------------------------
 
