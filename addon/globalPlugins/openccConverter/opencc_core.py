@@ -97,6 +97,19 @@ CONVERSION_CODES: "tuple[str, ...]" = tuple(CONVERSIONS.keys())
 #: vocabulary (e.g. 软件 -> 軟體, 内存 -> 記憶體).
 DEFAULT_CONVERSION = "s2twp"
 
+#: Maps each supported conversion to its reverse direction, used by the
+#: "swap direction" command.  Every supported code has exactly one reverse, and
+#: reversing twice yields the original (the mapping is an involution).  Phrase
+#: handling is preserved across a swap (e.g. ``s2twp`` <-> ``tw2sp``).
+REVERSALS: "dict[str, str]" = {
+	"s2t": "t2s",
+	"t2s": "s2t",
+	"s2tw": "tw2s",
+	"tw2s": "s2tw",
+	"s2twp": "tw2sp",
+	"tw2sp": "s2twp",
+}
+
 # Engines are cached and reused.  opencc-purepy builds each direction's
 # dictionary union once and shares it process-wide, so construction is cheap;
 # caching just avoids repeating even that small setup.  A lock guards the cache
@@ -108,6 +121,19 @@ _cache_lock = threading.Lock()
 def is_supported(conversion: str) -> bool:
 	"""Return ``True`` if ``conversion`` is one of the supported directions."""
 	return conversion in CONVERSIONS
+
+
+def reverse(conversion: str) -> str:
+	"""Return the reverse of ``conversion`` (e.g. ``s2twp`` -> ``tw2sp``).
+
+	:raises ValueError: if ``conversion`` has no supported reverse direction.
+	"""
+	try:
+		return REVERSALS[conversion]
+	except KeyError:
+		raise ValueError(
+			"No reverse for %r; expected one of %s" % (conversion, ", ".join(CONVERSION_CODES))
+		)
 
 
 def _get_engine(conversion: str) -> OpenCC:

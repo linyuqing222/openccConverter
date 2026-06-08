@@ -99,3 +99,33 @@ def test_default_conversion_is_s2twp():
 def test_unsupported_conversion_raises():
 	with pytest.raises(ValueError):
 		opencc_core.convert("测试", "does-not-exist")
+
+
+def test_every_direction_has_a_supported_reverse():
+	"""Each supported direction must reverse to another supported direction."""
+	for code in opencc_core.CONVERSION_CODES:
+		rev = opencc_core.reverse(code)
+		print(f"reverse({code}) -> {rev}")
+		assert opencc_core.is_supported(rev)
+
+
+def test_reverse_is_an_involution():
+	"""Reversing twice must return the original direction."""
+	for code in opencc_core.CONVERSION_CODES:
+		assert opencc_core.reverse(opencc_core.reverse(code)) == code
+
+
+def test_reverse_concrete_pairs():
+	assert opencc_core.reverse("s2twp") == "tw2sp"
+	assert opencc_core.reverse("tw2sp") == "s2twp"
+	assert opencc_core.reverse("s2tw") == "tw2s"
+	assert opencc_core.reverse("s2t") == "t2s"
+	# Phrase handling is preserved across the swap: the simplified->traditional
+	# vocabulary mapping and its reverse round-trip.
+	assert opencc_core.convert("内存", "s2twp") == "記憶體"
+	assert opencc_core.convert("記憶體", opencc_core.reverse("s2twp")) == "内存"
+
+
+def test_reverse_unsupported_raises():
+	with pytest.raises(ValueError):
+		opencc_core.reverse("does-not-exist")
