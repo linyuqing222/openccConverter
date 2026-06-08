@@ -28,23 +28,57 @@ if _VENDOR_DIR not in sys.path:
 	sys.path.insert(0, _VENDOR_DIR)
 
 
+class _SerialPool:
+	"""A serial, in-process stand-in for :class:`multiprocessing.Pool`.
+
+	The bundled engine reaches for a ``Pool`` on very large inputs (text of
+	~1,000,000 characters or more, e.g. converting a whole book).  Running that
+	work serially in this process yields the same result -- NVDA is
+	single-process anyway -- so the only thing lost is the parallelism.  An
+	earlier stub *raised* here instead, which surfaced large conversions to the
+	user as an untranslated "Conversion failed" error.
+	"""
+
+	def __init__(self, *args, **kwargs):
+		pass
+
+	def map(self, func, iterable, chunksize=None):
+		return [func(item) for item in iterable]
+
+	def close(self):
+		pass
+
+	def join(self):
+		pass
+
+	def terminate(self):
+		pass
+
+	def __enter__(self):
+		return self
+
+	def __exit__(self, *exc):
+		return False
+
+
 def _ensure_multiprocessing() -> None:
 	"""Provide a minimal ``multiprocessing`` stand-in on runtimes that lack it.
 
 	NVDA ships a stripped-down, frozen CPython that omits the
-	``multiprocessing`` module.  ``opencc_purepy.core`` imports
-	``Pool``/``cpu_count`` at module load time purely to parallelize conversion
-	of very large inputs (text longer than ~1,000,000 characters), which never
-	happens for the short strings NVDA converts.  Rather than patch the vendored
+	``multiprocessing`` module.  ``opencc_purepy.core`` imports ``Pool`` and
+	``cpu_count`` at module load time and reaches for a real ``Pool`` on very
+	large inputs (~1,000,000 characters or more), which *can* happen -- e.g.
+	converting a whole book from the clipboard.  Rather than patch the vendored
 	engine -- which would be lost the next time it is re-synced from upstream --
-	we install a tiny stub into ``sys.modules`` so the engine's top-level import
-	succeeds and falls back to its serial code path.
+	we install a tiny stub into ``sys.modules`` whose :class:`_SerialPool` runs
+	the work serially, so large conversions still succeed instead of failing.
 
 	On a normal Python interpreter (e.g. the test suite) the real module imports
 	fine and this function does nothing.
 	"""
 	try:
 		import multiprocessing  # noqa: F401
+
 		return
 	except ImportError:
 		pass
@@ -52,21 +86,8 @@ def _ensure_multiprocessing() -> None:
 	import types
 
 	stub = types.ModuleType("multiprocessing")
-
-	def cpu_count() -> int:
-		return 1
-
-	class Pool(object):
-		# The engine only constructs a Pool on its parallel path, which is
-		# gated behind input sizes NVDA never reaches.  Raise clearly if that
-		# assumption is ever violated instead of failing obscurely.
-		def __init__(self, *args, **kwargs):
-			raise NotImplementedError(
-				"multiprocessing is unavailable in this Python runtime"
-			)
-
-	stub.cpu_count = cpu_count
-	stub.Pool = Pool
+	stub.cpu_count = lambda: 1
+	stub.Pool = _SerialPool
 	sys.modules["multiprocessing"] = stub
 
 
@@ -131,9 +152,7 @@ def reverse(conversion: str) -> str:
 	try:
 		return REVERSALS[conversion]
 	except KeyError:
-		raise ValueError(
-			"No reverse for %r; expected one of %s" % (conversion, ", ".join(CONVERSION_CODES))
-		)
+		raise ValueError("No reverse for %r; expected one of %s" % (conversion, ", ".join(CONVERSION_CODES)))
 
 
 def _get_engine(conversion: str) -> OpenCC:

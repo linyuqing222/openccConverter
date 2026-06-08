@@ -129,3 +129,19 @@ def test_reverse_concrete_pairs():
 def test_reverse_unsupported_raises():
 	with pytest.raises(ValueError):
 		opencc_core.reverse("does-not-exist")
+
+
+def test_serial_pool_runs_work_serially():
+	"""The multiprocessing fallback Pool must run work in-process via map().
+
+	On NVDA's frozen Python (no multiprocessing) the engine reaches for this
+	Pool on very large inputs; it must compute results rather than raise.
+	"""
+	pool = opencc_core._SerialPool(processes=4)
+	with pool as p:
+		assert p.map(lambda x: x * 2, [1, 2, 3]) == [2, 4, 6]
+	# The lifecycle methods the engine may call must be safe no-ops.
+	other = opencc_core._SerialPool()
+	other.close()
+	other.join()
+	other.terminate()
