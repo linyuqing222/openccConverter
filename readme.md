@@ -90,6 +90,27 @@ uv pip install -e .          # install build dependencies (scons, Markdown, ...)
 scons                        # produces openccConverter-<version>.nvda-addon
 ```
 
+### Translations
+
+User-visible strings go through NVDA's gettext (`_()`), and the add-on summary,
+description, and changelog in `buildVars.py` are translatable too. Translations
+live in `addon/locale/<lang>/LC_MESSAGES/nvda.po` and are compiled to `nvda.mo`
+at build time; a translated manifest (summary/description/changelog) is also
+generated per language.
+
+A **Traditional Chinese (Taiwan), `zh_TW`** translation is included.
+
+To update or add a translation:
+
+```sh
+scons pot                                  # regenerate openccConverter.pot
+# new language:
+msginit -i openccConverter.pot -o addon/locale/<lang>/LC_MESSAGES/nvda.po -l <lang>
+# existing language (merge new/changed strings):
+msgmerge -U addon/locale/<lang>/LC_MESSAGES/nvda.po openccConverter.pot
+scons                                       # compiles nvda.mo into the add-on
+```
+
 ## License
 
 OpenCC Converter is licensed under the **GNU General Public License, version 2

@@ -1,0 +1,110 @@
+# openccConverter zh_TW (Traditional Chinese, Taiwan) translation.
+# Copyright (C) 2026 Kevin Lin
+# This file is distributed under the same license as the openccConverter package.
+# Kevin Lin <kevin82222@gmail.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: openccConverter 1.0.0\n"
+"Report-Msgid-Bugs-To: nvda-translations@groups.io\n"
+"POT-Creation-Date: 2026-06-08 11:57+0800\n"
+"PO-Revision-Date: 2026-06-08 12:00+0800\n"
+"Last-Translator: Kevin Lin <kevin82222@gmail.com>\n"
+"Language-Team: Chinese (Taiwan)\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Translators: A conversion direction shown in the settings panel.
+msgid "Simplified Chinese → Traditional Chinese"
+msgstr "簡體中文 → 繁體中文"
+
+#. Translators: A conversion direction shown in the settings panel.
+msgid "Simplified Chinese → Traditional Chinese (Taiwan)"
+msgstr "簡體中文 → 繁體中文(臺灣)"
+
+#. Translators: A conversion direction shown in the settings panel.
+msgid "Simplified Chinese → Traditional Chinese (Taiwan, with phrases)"
+msgstr "簡體中文 → 繁體中文(臺灣,含詞彙轉換)"
+
+#. Translators: A conversion direction shown in the settings panel.
+msgid "Traditional Chinese → Simplified Chinese"
+msgstr "繁體中文 → 簡體中文"
+
+#. Translators: A conversion direction shown in the settings panel.
+msgid "Traditional Chinese (Taiwan) → Simplified Chinese"
+msgstr "繁體中文(臺灣) → 簡體中文"
+
+#. Translators: A conversion direction shown in the settings panel.
+msgid "Traditional Chinese (Taiwan) → Simplified Chinese (with phrases)"
+msgstr "繁體中文(臺灣) → 簡體中文(含詞彙轉換)"
+
+#. Translators: Title of the openccConverter category in NVDA's settings dialog.
+#. Translators: Input gestures category for this add-on.
+#. Add-on summary/title, usually the user visible name of the add-on
+#. Translators: Summary/title for this add-on
+#. to be shown on installation and add-on information found in add-on store
+msgid "OpenCC Converter"
+msgstr "OpenCC 轉換器"
+
+#. Translators: Label for the conversion direction combo box in the settings panel.
+msgid "Conversion &direction:"
+msgstr "轉換方向(&D):"
+
+#. Translators: Description of the conversion command shown in Input Gestures.
+msgid ""
+"Converts the selected text between Simplified and Traditional Chinese. Press "
+"twice quickly to convert the text on the clipboard instead. The result is "
+"spoken and copied to the clipboard."
+msgstr ""
+"在簡體與繁體中文之間轉換選取的文字。快速連按兩次則改為轉換剪貼簿的文字。轉換結"
+"果會朗讀出來,並複製到剪貼簿。"
+
+#. Translators: Reported when no text is selected.
+msgid "No selection"
+msgstr "沒有選取文字"
+
+#. Translators: Reported when the clipboard contains no convertible text.
+msgid "The clipboard is empty"
+msgstr "剪貼簿是空的"
+
+#. Translators: Reported when there is no text to convert.
+msgid "There is no text to convert"
+msgstr "沒有可轉換的文字"
+
+#. Translators: Reported when conversion unexpectedly fails.
+msgid "Conversion failed"
+msgstr "轉換失敗"
+
+#. Add-on description
+#. Translators: Long description to be shown for this add-on on add-on information from add-on store
+msgid ""
+"Offline Simplified/Traditional Chinese conversion.\n"
+"Converts the selected text (single press) or the clipboard text (double "
+"press)\n"
+"between Simplified and Traditional Chinese and speaks the result, which is "
+"also\n"
+"copied to the clipboard. The conversion direction (s2t, s2tw, s2twp, t2s, "
+"tw2s,\n"
+"tw2sp) is configurable. Everything runs fully offline using a bundled,\n"
+"pure-Python OpenCC engine; no internet connection is required."
+msgstr ""
+"離線簡繁中文轉換。\n"
+"單按轉換選取的文字、連按兩次轉換剪貼簿的文字,在簡體與繁體中文之間轉換並朗讀結"
+"果,結果也會複製到剪貼簿。\n"
+"轉換方向(s2t、s2tw、s2twp、t2s、tw2s、tw2sp)可在設定中切換。\n"
+"全部使用內建的純 Python OpenCC 引擎,完全離線運作,不需要網路連線。"
+
+#. Brief changelog for this version
+#. Translators: what's new content for the add-on version to be shown in the add-on store
+msgid ""
+"First release.\n"
+"- Convert the selected text or the clipboard between Simplified and "
+"Traditional Chinese, fully offline.\n"
+"- Configurable conversion direction: s2t, s2tw, s2twp, t2s, tw2s, tw2sp."
+msgstr ""
+"首次發行。\n"
+"- 完全離線,在簡體與繁體中文之間轉換選取的文字或剪貼簿內容。\n"
+"- 可設定轉換方向:s2t、s2tw、s2twp、t2s、tw2s、tw2sp。"
