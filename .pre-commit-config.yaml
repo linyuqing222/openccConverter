@@ -9,6 +9,11 @@ ci:
   autofix_commit_msg: "Pre-commit auto-fix"
   submodules: true
 
+# The bundled OpenCC engine and dictionaries under `_vendor` are unmodified
+# third-party code (re-synced from upstream); never lint, reformat, or otherwise
+# touch them.
+exclude: ^addon/globalPlugins/openccConverter/_vendor/
+
 default_language_version:
   python: python3.13
 
