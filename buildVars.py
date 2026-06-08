@@ -22,17 +22,19 @@ addon_info = AddonInfo(
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on add-on information from add-on store
 	addon_description=_("""Offline Simplified/Traditional Chinese conversion.
-Converts the selected text (single press) or the clipboard text (double press)
-between Simplified and Traditional Chinese and speaks the result, which is also
-copied to the clipboard. The conversion direction is configurable in the add-on
-settings. Everything runs fully offline using a bundled, pure-Python OpenCC
-engine; no internet connection is required."""),
+Converts the selected text or the clipboard text between Simplified and
+Traditional Chinese and speaks the result, which is also copied to the
+clipboard. The conversion direction is configurable in the add-on settings and
+can be swapped on the fly. Everything runs fully offline using a bundled,
+pure-Python OpenCC engine; no internet connection is required."""),
 	# version
-	addon_version="1.2.0",
+	addon_version="1.0.0",
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""Version 1.2.0:
-- Conversions are now noticeably faster, especially for large text such as a whole book, thanks to a faster pure-Python conversion engine. Everything still runs fully offline."""),
+	addon_changelog=_("""First release.
+- Offline Simplified/Traditional Chinese conversion of the selected text or the clipboard, fully offline.
+- Press NVDA+shift+c, then s to convert the selection, c to convert the clipboard, or w to swap the conversion direction.
+- The conversion direction is configurable in the add-on settings."""),
 	# Author(s)
 	addon_author="Kevin Lin <kevin82222@gmail.com>",
 	# URL for the add-on documentation support

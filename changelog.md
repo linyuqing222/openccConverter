@@ -1,10 +1,12 @@
 # Changelog
 
-## 1.2.0
+## 1.0.0
 
-- Replaced the bundled conversion engine with the faster pure-Python
-  [opencc-purepy](https://github.com/laisuk/opencc_purepy) (about twice as fast
-  on large text); conversions remain fully offline. Output for the default
-  direction and every Taiwan-standard direction is unchanged. A couple of
-  non-default directions (`s2t`, `tw2sp`) may now produce slightly different but
-  equivalent characters, reflecting the newer OpenCC dictionary data.
+- First release.
+- Offline Simplified ⇄ Traditional Chinese conversion of the selected text or
+  the clipboard, using a bundled OpenCC engine; no internet connection needed.
+- Command layer: press NVDA+shift+c, then s (selection), c (clipboard) or
+  w (swap direction).
+- The result is copied to the clipboard and spoken; very large results are
+  announced as a character count, and a progress tone sounds while converting.
+- Configurable conversion direction in the add-on settings.

@@ -184,9 +184,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	@script(
 		# Translators: Description of the command-layer gesture shown in Input Gestures.
 		description=_(
-			"Enters the OpenCC Converter command layer. Then press s to convert the "
-			"selected text, c to convert the clipboard text, or w to swap the "
-			"conversion direction. Any other key cancels."
+			"OpenCC Converter command layer. Then press s to convert the selection, "
+			"c to convert the clipboard, or w to swap the direction."
 		),
 	)
 	def script_convertLayer(self, gesture):
@@ -201,31 +200,21 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 	@script(
 		# Translators: Description of the convert-selection command shown in Input Gestures.
-		description=_(
-			"Converts the selected text between Simplified and Traditional Chinese and "
-			"copies the result to the clipboard."
-		),
+		description=_("Converts the selected text between Simplified and Traditional Chinese."),
 	)
 	def script_convertSelection(self, gesture):
 		self._convertSelection()
 
 	@script(
 		# Translators: Description of the convert-clipboard command shown in Input Gestures.
-		description=_(
-			"Converts the clipboard text between Simplified and Traditional Chinese and "
-			"copies the result back to the clipboard."
-		),
+		description=_("Converts the clipboard text between Simplified and Traditional Chinese."),
 	)
 	def script_convertClipboard(self, gesture):
 		self._convertClipboard()
 
 	@script(
 		# Translators: Description of the swap-direction command shown in Input Gestures.
-		description=_(
-			"Swaps the conversion direction (for example Simplified to Traditional "
-			"becomes Traditional to Simplified), announces the new direction, and "
-			"converts the current selection in that direction."
-		),
+		description=_("Swaps the conversion direction."),
 	)
 	def script_swapDirection(self, gesture):
 		self._swap()
