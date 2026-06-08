@@ -3,9 +3,9 @@ requires = ["setuptools~=80.9", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "addonTemplate"
+name = "openccConverter"
 dynamic = ["version"]
-description = "NVDA add-on template"
+description = "NVDA add-on: offline Simplified/Traditional Chinese conversion"
 maintainers = [
 	{name = "NV Access", email = "info@nvaccess.org"},
 ]
@@ -37,6 +37,8 @@ dependencies = [
 	"ruff==0.14.5",
 	"pre-commit==4.2.0",
 	"pyright[nodejs]==1.1.407",
+	# Test
+	"pytest==9.0.3",
 ]
 [project.urls]
 Repository = "https://github.com/nvaccess/addonTemplate"
@@ -65,6 +67,9 @@ exclude = [
 	"__pycache__",
 	".venv",
 	"buildVars.py",
+	# Bundled, unmodified third-party engine (Apache 2.0); not our code to lint.
+	"**/_vendor",
+	"**/_vendor/**",
 ]
 
 [tool.ruff.format]
@@ -102,6 +107,8 @@ exclude = [
 	"__pycache__",
 	".venv",
 	"site_scons",
+	# Bundled, unmodified third-party engine (Apache 2.0); not our code to type-check.
+	"addon/globalPlugins/openccConverter/_vendor",
 	# When excluding concrete paths relative to a directory,
 	# not matching multiple folders by name e.g. `__pycache__`,
 	# paths are relative to the configuration file.
