@@ -11,8 +11,7 @@ internet connection is needed.
 
 - Convert the **selected text** or the **clipboard text** from a quick command
   layer, and **swap** the conversion direction on the fly.
-- The result is **spoken** and **copied to the clipboard**; your original text is
-  **never replaced in place**.
+- The result is **spoken** and **copied to the clipboard**.
 - Convert in either direction — Simplified → Traditional or Traditional →
   Simplified, including Taiwan-standard and phrase-level variants — selectable in
   the add-on settings.
@@ -38,9 +37,8 @@ press one key:
 - **`w`** — **swap** the conversion direction.
 
 Any other key dismisses the layer. The full converted text is placed on the
-clipboard; your document is never modified. The result is then spoken: short
-results in full, large results as a character count (so a huge conversion isn't
-read out in its entirety). A progress tone repeats while a long conversion is
+clipboard. The result is then spoken: short results in full, large results as a
+character count (so a huge conversion isn't read out in its entirety). A progress tone repeats while a long conversion is
 still running — handy for large inputs such as a whole book.
 
 Swapping the direction (**`w`**) announces the new direction and, if you have
@@ -63,6 +61,3 @@ later** (see [COPYING.txt](COPYING.txt)). It bundles, unmodified, the pure-Pytho
 [opencc-purepy](https://github.com/laisuk/opencc_purepy) engine (**MIT License**)
 together with [OpenCC](https://github.com/BYVoid/OpenCC) dictionary data (**Apache
 License 2.0**).
-
-Developers: see [DEVELOPMENT.md](DEVELOPMENT.md) for building, testing, and
-translating.
