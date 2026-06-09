@@ -88,7 +88,7 @@ With the direction set to `s2twp`:
 
 ## Progress tone and large inputs
 
-- [ ] Convert any text: a short tone sounds the moment conversion starts.
+- [ ] Convert a short selection: the converted result is spoken in full.
 - [ ] Copy a **whole novel** (~1 MB, hundreds of thousands of characters) to the
       clipboard, then press the layer + `c`. While it converts (several seconds):
   - [ ] A progress tone repeats roughly once per second.

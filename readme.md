@@ -38,10 +38,10 @@ press one key:
 - **`w`** — **swap** the conversion direction.
 
 Any other key dismisses the layer. The full converted text is placed on the
-clipboard; your document is never modified. A tone sounds while converting —
-handy for large inputs such as a whole book — and the result is then spoken:
-short results in full, large results as a character count (so a huge conversion
-isn't read out in its entirety).
+clipboard; your document is never modified. The result is then spoken: short
+results in full, large results as a character count (so a huge conversion isn't
+read out in its entirety). A progress tone repeats while a long conversion is
+still running — handy for large inputs such as a whole book.
 
 Swapping the direction (**`w`**) announces the new direction and, if you have
 text selected, converts that selection in the new direction. You can reassign

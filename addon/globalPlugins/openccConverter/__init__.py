@@ -127,8 +127,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	_LAYER_BEEP = (880, 40)
 	#: Tone (Hz, ms) played when the layer is dismissed by an unrelated key.
 	_CANCEL_BEEP = (160, 80)
-	#: Tone (Hz, ms) played the moment a conversion starts, as an immediate cue.
-	_START_BEEP = (660, 80)
 	#: Tone (Hz, ms) repeated while a conversion is still running.
 	_PROGRESS_BEEP = (500, 100)
 	#: Gap, in milliseconds, between progress beeps.
@@ -291,8 +289,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
 		The conversion itself can take several seconds for very large inputs
 		(e.g. a whole book), so it runs off the main thread to keep NVDA
-		responsive.  An immediate tone acknowledges the request and a progress
-		tone repeats until the conversion finishes.
+		responsive.  A progress tone repeats while a long conversion is still
+		running; short conversions finish before the first tone and are simply
+		spoken.
 		"""
 		if not text or not text.strip():
 			# Translators: Reported when there is no text to convert.
@@ -305,7 +304,6 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message(_("Still converting, please wait"))
 			return
 		self._converting = True
-		tones.beep(*self._START_BEEP)
 		self._progressTimer = core.callLater(self._PROGRESS_INTERVAL_MS, self._onProgressTick)
 		conversion = _currentConversion()
 		threading.Thread(target=self._conversionWorker, args=(text, conversion), daemon=True).start()
