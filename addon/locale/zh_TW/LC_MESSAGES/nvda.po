@@ -19,35 +19,35 @@ msgstr ""
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Simplified Chinese → Traditional Chinese"
-msgstr "簡體中文 → 繁體中文"
+msgstr "簡體中文 → 正體中文"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Simplified Chinese → Traditional Chinese (Taiwan)"
-msgstr "簡體中文 → 繁體中文(臺灣)"
+msgstr "簡體中文 → 正體中文(臺灣)"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Simplified Chinese → Traditional Chinese (Taiwan, with phrases)"
-msgstr "簡體中文 → 繁體中文(臺灣,含詞彙轉換)"
+msgstr "簡體中文 → 正體中文(臺灣,含詞彙轉換)"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Traditional Chinese → Simplified Chinese"
-msgstr "繁體中文 → 簡體中文"
+msgstr "正體中文 → 簡體中文"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Traditional Chinese (Taiwan) → Simplified Chinese"
-msgstr "繁體中文(臺灣) → 簡體中文"
+msgstr "正體中文(臺灣) → 簡體中文"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Traditional Chinese (Taiwan) → Simplified Chinese (with phrases)"
-msgstr "繁體中文(臺灣) → 簡體中文(含詞彙轉換)"
+msgstr "正體中文(臺灣) → 簡體中文(含詞彙轉換)"
 
 #. Translators: Title of the openccConverter category in NVDA's settings dialog.
 #. Translators: Input gestures category for this add-on.
 #. Add-on summary/title, usually the user visible name of the add-on
 #. Translators: Summary/title for this add-on
 #. to be shown on installation and add-on information found in add-on store
-msgid "OpenCC Converter"
-msgstr "OpenCC 轉換器"
+msgid "OpenCC Chinese Converter"
+msgstr "OpenCC 中文簡繁轉換"
 
 #. Translators: Label for the conversion direction combo box in the settings panel.
 msgid "Conversion &direction:"
@@ -55,19 +55,19 @@ msgstr "轉換方向(&D):"
 
 #. Translators: Description of the command-layer gesture shown in Input Gestures.
 msgid ""
-"OpenCC Converter command layer. Then press s to convert the selection, c to "
-"convert the clipboard, or w to swap the direction."
+"OpenCC Chinese Converter command layer. Then press s to convert the "
+"selection, c to convert the clipboard, or w to swap the direction."
 msgstr ""
-"OpenCC 轉換器指令層。接著按 s 轉換選取的文字、按 c 轉換剪貼簿,或按 w 交換轉換"
-"方向。"
+"OpenCC 中文簡繁轉換指令層。接著按 s 轉換選取的文字、按 c 轉換剪貼簿,或按 w 交"
+"換轉換方向。"
 
 #. Translators: Description of the convert-selection command shown in Input Gestures.
 msgid "Converts the selected text between Simplified and Traditional Chinese."
-msgstr "在簡體與繁體中文之間轉換選取的文字。"
+msgstr "在簡體與正體中文之間轉換選取的文字。"
 
 #. Translators: Description of the convert-clipboard command shown in Input Gestures.
 msgid "Converts the clipboard text between Simplified and Traditional Chinese."
-msgstr "在簡體與繁體中文之間轉換剪貼簿的文字。"
+msgstr "在簡體與正體中文之間轉換剪貼簿的文字。"
 
 #. Translators: Description of the swap-direction command shown in Input Gestures.
 msgid "Swaps the conversion direction."
@@ -116,7 +116,7 @@ msgid ""
 "pure-Python OpenCC engine; no internet connection is required."
 msgstr ""
 "離線簡繁中文轉換。\n"
-"在簡體與繁體中文之間轉換選取的文字或剪貼簿的文字並朗讀結果,結果也會複製到剪貼"
+"在簡體與正體中文之間轉換選取的文字或剪貼簿的文字並朗讀結果,結果也會複製到剪貼"
 "簿。\n"
 "轉換方向可在元件設定中切換,也可以即時交換。\n"
 "全部使用內建的純 Python OpenCC 引擎,完全離線運作,不需要網路連線。"
@@ -132,7 +132,7 @@ msgid ""
 "- The conversion direction is configurable in the add-on settings."
 msgstr ""
 "首次發布。\n"
-"- 在簡體與繁體中文之間轉換選取的文字或剪貼簿的文字,完全離線。\n"
+"- 在簡體與正體中文之間轉換選取的文字或剪貼簿的文字,完全離線。\n"
 "- 按 NVDA+shift+c,接著按 s 轉換選取的文字、按 c 轉換剪貼簿,或按 w 交換轉換方"
 "向。\n"
 "- 轉換方向可在元件設定中切換。"
