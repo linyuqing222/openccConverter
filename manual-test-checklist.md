@@ -1,4 +1,4 @@
-# Manual test checklist — OpenCC Converter
+# Manual test checklist — OpenCC Chinese Converter
 
 These checks must be run inside a real NVDA installation, because they exercise
 behaviour (gestures, speech, the clipboard, the settings GUI) that cannot be
@@ -8,7 +8,7 @@ verified automatically — see `tests/` and run `python -m pytest tests/ -s -v`.
 ## Environment
 
 - NVDA version: ____________ (target: 2026.1; minimum supported: 2023.1)
-- OpenCC Converter version: ____________
+- OpenCC Chinese Converter version: ____________
 - Tester / date: ____________
 
 ## Setup
@@ -21,7 +21,7 @@ verified automatically — see `tests/` and run `python -m pytest tests/ -s -v`.
 
 ## Settings panel
 
-- [ ] Open *NVDA menu → Preferences → Settings*. An **OpenCC Converter**
+- [ ] Open *NVDA menu → Preferences → Settings*. An **OpenCC Chinese Converter**
       category is present.
 - [ ] The category contains a **Conversion direction** combo box listing all
       six directions: s2t, s2tw, s2twp, t2s, tw2s, tw2sp.
@@ -33,7 +33,7 @@ verified automatically — see `tests/` and run `python -m pytest tests/ -s -v`.
 
 ## Input Gestures
 
-- [ ] Open *NVDA menu → Preferences → Input Gestures*. An **OpenCC Converter**
+- [ ] Open *NVDA menu → Preferences → Input Gestures*. An **OpenCC Chinese Converter**
       category is present, listing the command-layer gesture and (unassigned by
       default) the convert-selection, convert-clipboard and swap-direction
       commands.
@@ -122,6 +122,6 @@ With the direction set to `s2twp`:
 
 ## Cleanup
 
-- [ ] Disable/remove the add-on and confirm the **OpenCC Converter** category
+- [ ] Disable/remove the add-on and confirm the **OpenCC Chinese Converter** category
       disappears from both Settings and Input Gestures, with no errors in the
       log.

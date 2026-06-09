@@ -1,8 +1,8 @@
-# OpenCC Converter
+# OpenCC Chinese Converter
 
 Offline Simplified ⇄ Traditional Chinese conversion for [NVDA](https://www.nvaccess.org/).
 
-OpenCC Converter converts the **selected text** or the **clipboard text** between
+OpenCC Chinese Converter converts the **selected text** or the **clipboard text** between
 Simplified and Traditional Chinese, speaks the result, and copies it to the
 clipboard. It runs **completely offline** — all dictionaries are bundled, so no
 internet connection is needed.
@@ -51,14 +51,14 @@ Converter** category.
 ## Settings
 
 Choose the conversion direction in
-*NVDA menu → Preferences → Settings → OpenCC Converter*. Your choice is saved and
+*NVDA menu → Preferences → Settings → OpenCC Chinese Converter*. Your choice is saved and
 persists across restarts. The default is **Simplified → Traditional Chinese
 (Taiwan, with phrases)**, which produces idiomatic Taiwanese vocabulary (for
 example 软件 → 軟體, 内存 → 記憶體).
 
 ## License
 
-OpenCC Converter is licensed under the **GNU General Public License, version 2 or
+OpenCC Chinese Converter is licensed under the **GNU General Public License, version 2 or
 later** (see [COPYING.txt](COPYING.txt)). It bundles, unmodified, the pure-Python
 [opencc-purepy](https://github.com/laisuk/opencc_purepy) engine (**MIT License**)
 together with [OpenCC](https://github.com/BYVoid/OpenCC) dictionary data (**Apache

@@ -98,7 +98,7 @@ def _currentConversion() -> str:
 
 class OpenCCSettingsPanel(settingsDialogs.SettingsPanel):
 	# Translators: Title of the openccConverter category in NVDA's settings dialog.
-	title = _("OpenCC Converter")
+	title = _("OpenCC Chinese Converter")
 
 	def makeSettings(self, settingsSizer):
 		sHelper = guiHelper.BoxSizerHelper(self, sizer=settingsSizer)
@@ -120,7 +120,7 @@ class OpenCCSettingsPanel(settingsDialogs.SettingsPanel):
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	# Translators: Input gestures category for this add-on.
-	scriptCategory = _("OpenCC Converter")
+	scriptCategory = _("OpenCC Chinese Converter")
 
 	#: Tone (Hz, ms) played when the command layer is armed and waiting for the
 	#: next key (selection or clipboard).
@@ -184,7 +184,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	@script(
 		# Translators: Description of the command-layer gesture shown in Input Gestures.
 		description=_(
-			"OpenCC Converter command layer. Then press s to convert the selection, "
+			"OpenCC Chinese Converter command layer. Then press s to convert the selection, "
 			"c to convert the clipboard, or w to swap the direction.",
 		),
 	)
