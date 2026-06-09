@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/linyuqing222/openccConverter/compare/v1.0.0...v1.0.1) (2026-06-09)
+
+
+### Documentation
+
+* add zh_TW readme and trim dev-only docs ([#3](https://github.com/linyuqing222/openccConverter/issues/3)) ([623b136](https://github.com/linyuqing222/openccConverter/commit/623b136fac538540665c0d9c2f10cb840e4f4f34))
+
 ## 1.0.0
 
 - First release.
