@@ -33,10 +33,11 @@ pure-Python OpenCC engine; no internet connection is required."""),
 	addon_version="2.0.0",  # x-release-please-version
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""First release.
-- Offline Simplified/Traditional Chinese conversion of the selected text or the clipboard, fully offline.
-- Press NVDA+shift+c, then s to convert the selection, c to convert the clipboard, or w to swap the conversion direction.
-- The conversion direction is configurable in the add-on settings."""),
+	addon_changelog=_("""2.0.0 (2026-06-10)
+⚠ BREAKING CHANGES:
+- require NVDA 2024.1
+Miscellaneous:
+- require NVDA 2024.1"""),
 	# Author(s)
 	addon_author="Kevin Lin <kevin82222@gmail.com>",
 	# URL for the add-on documentation support
