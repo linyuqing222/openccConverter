@@ -23,11 +23,11 @@ msgstr "簡體中文 → 正體中文"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Simplified Chinese → Traditional Chinese (Taiwan)"
-msgstr "簡體中文 → 正體中文(臺灣)"
+msgstr "簡體中文 → 正體中文 (臺灣)"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Simplified Chinese → Traditional Chinese (Taiwan, with phrases)"
-msgstr "簡體中文 → 正體中文(臺灣,含詞彙轉換)"
+msgstr "簡體中文 → 正體中文 (臺灣，含詞彙轉換)"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Traditional Chinese → Simplified Chinese"
@@ -35,11 +35,11 @@ msgstr "正體中文 → 簡體中文"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Traditional Chinese (Taiwan) → Simplified Chinese"
-msgstr "正體中文(臺灣) → 簡體中文"
+msgstr "正體中文 (臺灣) → 簡體中文"
 
 #. Translators: A conversion direction shown in the settings panel.
 msgid "Traditional Chinese (Taiwan) → Simplified Chinese (with phrases)"
-msgstr "正體中文(臺灣) → 簡體中文(含詞彙轉換)"
+msgstr "正體中文 (臺灣) → 簡體中文 (含詞彙轉換)"
 
 #. Translators: Title of the openccConverter category in NVDA's settings dialog.
 #. Translators: Input gestures category for this add-on.
