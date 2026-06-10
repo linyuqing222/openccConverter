@@ -18,7 +18,7 @@ internet connection is needed.
 
 ## Requirements
 
-- NVDA **2023.1** or later (last tested with NVDA **2026.1**).
+- NVDA **2024.1** or later (last tested with NVDA **2026.1**).
 
 ## Installation
 

@@ -276,13 +276,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		"""Return ``False`` when speech is in on-demand mode.
 
 		In that mode the user has opted out of incidental speech, so a swap should
-		quietly change the direction without also speaking a conversion.  Older
-		NVDA releases without on-demand mode always return ``True``.
+		quietly change the direction without also speaking a conversion.
 		"""
-		try:
-			return speech.getState().speechMode != speech.SpeechMode.onDemand
-		except (AttributeError, RuntimeError):
-			return True
+		return speech.getState().speechMode != speech.SpeechMode.onDemand
 
 	def _beginConversion(self, text: str):
 		"""Start converting ``text`` on a background thread, with audible cues.
