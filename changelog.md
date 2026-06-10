@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/linyuqing222/openccConverter/compare/v2.0.0...v2.0.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* remove extra trailing newline in Claude workflow files ([#11](https://github.com/linyuqing222/openccConverter/issues/11)) ([73cee14](https://github.com/linyuqing222/openccConverter/commit/73cee142dc82bcb647bc6dbe7d6810500c43ed95))
+
 ## [2.0.0](https://github.com/linyuqing222/openccConverter/compare/v1.0.1...v2.0.0) (2026-06-10)
 
 
