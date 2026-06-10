@@ -59,3 +59,40 @@ jobs:
             printf '```\n%s\n```\n' "$checksum"
           } >> body.md
           gh release edit "$TAG" --notes-file body.md
+
+  # release-please can bump the version in buildVars.py but cannot write the
+  # generated notes into it, so the store "What's new" (addon_changelog) goes
+  # stale. Mirror the latest changelog.md section into buildVars.py on the open
+  # release PR branch, before it is merged and tagged. No-op when no release PR
+  # is open. Pushing to the release branch (not main) does not re-trigger this
+  # workflow; release-please re-creates the branch on later pushes and this job
+  # re-applies, so it self-heals.
+  sync-changelog:
+    needs: release-please
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Find the open release PR
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          branch="$(gh pr list --state open --label 'autorelease: pending' \
+            --json headRefName -q '.[0].headRefName')"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+      - name: Sync addon_changelog onto the release PR branch
+        if: ${{ steps.pr.outputs.branch != '' }}
+        env:
+          BRANCH: ${{ steps.pr.outputs.branch }}
+        run: |
+          git fetch origin "$BRANCH:$BRANCH"
+          git switch "$BRANCH"
+          python3 scripts/sync_addon_changelog.py
+          git diff --quiet -- buildVars.py && exit 0
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -am 'chore: sync addon_changelog with changelog.md'
+          git push origin "$BRANCH"
