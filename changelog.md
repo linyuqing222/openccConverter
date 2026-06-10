@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/linyuqing222/openccConverter/compare/v1.0.1...v2.0.0) (2026-06-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* require NVDA 2024.1 ([#6](https://github.com/linyuqing222/openccConverter/issues/6))
+
+### Miscellaneous
+
+* require NVDA 2024.1 ([#6](https://github.com/linyuqing222/openccConverter/issues/6)) ([d85212b](https://github.com/linyuqing222/openccConverter/commit/d85212bd659b8c0faf4893852b2281fe9f88a7cc))
+
 ## [1.0.1](https://github.com/linyuqing222/openccConverter/compare/v1.0.0...v1.0.1) (2026-06-09)
 
 
