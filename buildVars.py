@@ -33,11 +33,9 @@ pure-Python OpenCC engine; no internet connection is required."""),
 	addon_version="2.0.1",  # x-release-please-version
 	# Brief changelog for this version
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""2.0.0 (2026-06-10)
-⚠ BREAKING CHANGES:
-- require NVDA 2024.1
-Miscellaneous:
-- require NVDA 2024.1"""),
+	addon_changelog=_("""2.0.1 (2026-06-10)
+Bug Fixes:
+- remove extra trailing newline in Claude workflow files"""),
 	# Author(s)
 	addon_author="Kevin Lin <kevin82222@gmail.com>",
 	# URL for the add-on documentation support
