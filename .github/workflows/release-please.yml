@@ -124,8 +124,9 @@ jobs:
       # claude-code-action does not run on push-triggered workflows
       # ("Unsupported event type: push"), so call the Claude CLI in headless
       # mode instead. The changelog text derives from PR titles, i.e.
-      # untrusted input, so treat the model as injectable: Write is scoped to
-      # the runner temp dir (RUNNER_TEMP on hosted runners) and the apply step
+      # untrusted input, so treat the model as injectable: it only gets
+      # read-only tools and its stdout is captured into RUNNER_TEMP by the
+      # step itself, with a strict line-count check; the apply step
       # additionally resets the workspace before executing anything from it.
       # The CLI install lives inside this step so an install failure is also
       # absorbed by continue-on-error rather than failing the job.
@@ -151,15 +152,18 @@ jobs:
           - Keep terminology and punctuation consistent with the existing msgstr
             translations in addon/locale/zh_TW/LC_MESSAGES/nvda.po and with
             addon/doc/zh_TW/readme.md.
-          Write ONLY the translated plain text (no commentary, no code fences) to
-          $RUNNER_TEMP/changelog_zh_TW.txt using the Write tool.
-          Do not modify any file inside the repository.
+          Your entire response must be exactly the translated lines and nothing
+          else: no introduction, no commentary, no code fences, no notes.
           EOF
           )
-          # --add-dir is required as well: file tools only reach the working
-          # directory tree by default, and RUNNER_TEMP lives outside it.
-          claude -p "$prompt" --add-dir "$RUNNER_TEMP" \
-            --allowedTools 'Read,Glob,Grep,Write(//home/runner/work/_temp/**)'
+          claude -p "$prompt" --allowedTools 'Read,Glob,Grep' < /dev/null \
+            > "$RUNNER_TEMP/changelog_zh_TW.txt"
+          # Strip a wrapping code fence if the model added one anyway, then
+          # require a 1:1 line mapping with the English source; on mismatch
+          # this step fails and the release falls back to English as before.
+          sed -i '1{/^```/d}; ${/^```$/d}' "$RUNNER_TEMP/changelog_zh_TW.txt"
+          [ "$(grep -c '' "$RUNNER_TEMP/changelog_en.txt")" \
+            -eq "$(grep -c '' "$RUNNER_TEMP/changelog_zh_TW.txt")" ]
       - name: Apply the translation to nvda.po
         id: apply
         if: ${{ steps.po.outputs.needed == 'true' && steps.translate.outcome == 'success' }}
