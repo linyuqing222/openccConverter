@@ -50,9 +50,13 @@ Converter** category.
 
 Choose the conversion direction in
 *NVDA menu → Preferences → Settings → OpenCC Chinese Converter*. Your choice is saved and
-persists across restarts. The default is **Simplified → Traditional Chinese
-(Taiwan, with phrases)**, which produces idiomatic Taiwanese vocabulary (for
-example 软件 → 軟體, 内存 → 記憶體).
+persists across restarts. Until you choose a direction yourself, the default
+follows NVDA's interface language: on a Simplified-Chinese NVDA (zh_CN, zh_SG) it is **Traditional
+Chinese (Taiwan) → Simplified Chinese (with phrases)**; on a Hong Kong or
+Macau NVDA (zh_HK, zh_MO) it is **Simplified → Traditional Chinese**; for
+every other language — including Taiwan — it is **Simplified → Traditional
+Chinese (Taiwan, with phrases)**, which produces idiomatic Taiwanese
+vocabulary (for example 软件 → 軟體, 内存 → 記憶體).
 
 ## License
 

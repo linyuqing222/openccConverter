@@ -29,6 +29,7 @@ import ui
 import config
 import core
 import queueHandler
+import languageHandler
 import textInfos
 import tones
 import speech
@@ -63,10 +64,20 @@ def finally_(func, final):
 #: Configuration section / key used in ``nvda.ini`` (``config.conf``).
 CONFIG_SECTION = "openccConverter"
 
+#: Default conversion direction for this NVDA's UI language (e.g. Traditional
+#: -> Simplified on a Simplified-Chinese NVDA).  Only the *default* depends on
+#: the language; a direction the user has saved is never overridden.
+_DEFAULT_CONVERSION = opencc_core.default_for_language(languageHandler.getLanguage())
+
 # Register the configuration specification.  The selected conversion direction
-# is persisted here.
+# is persisted here.  The stored default is a sentinel rather than a real
+# direction: NVDA discards config writes equal to the current value, so with a
+# real direction as the spec default, explicitly choosing that direction in the
+# settings panel would never be persisted -- and would then silently follow the
+# UI language instead of staying as chosen.  ``_currentConversion`` resolves the
+# sentinel (or any unknown value) to ``_DEFAULT_CONVERSION``.
 config.conf.spec[CONFIG_SECTION] = {
-	"conversion": 'string(default="%s")' % opencc_core.DEFAULT_CONVERSION,
+	"conversion": 'string(default="auto")',
 }
 
 
@@ -89,10 +100,14 @@ CONVERSION_LABELS = {
 
 
 def _currentConversion() -> str:
-	"""Return the configured conversion code, falling back to the default."""
+	"""Return the configured conversion code.
+
+	The ``auto`` sentinel (nothing saved yet) and any unknown stored value
+	resolve to the language-appropriate default.
+	"""
 	conversion = config.conf[CONFIG_SECTION]["conversion"]
 	if not opencc_core.is_supported(conversion):
-		conversion = opencc_core.DEFAULT_CONVERSION
+		conversion = _DEFAULT_CONVERSION
 	return conversion
 
 
@@ -262,7 +277,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		try:
 			newConversion = opencc_core.reverse(current)
 		except ValueError:
-			newConversion = opencc_core.DEFAULT_CONVERSION
+			newConversion = _DEFAULT_CONVERSION
 		config.conf[CONFIG_SECTION]["conversion"] = newConversion
 		ui.message(CONVERSION_LABELS[newConversion])
 		if not self._shouldAutoConvert():

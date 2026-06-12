@@ -118,6 +118,44 @@ CONVERSION_CODES: "tuple[str, ...]" = tuple(CONVERSIONS.keys())
 #: vocabulary (e.g. 软件 -> 軟體, 内存 -> 記憶體).
 DEFAULT_CONVERSION = "s2twp"
 
+#: Default conversion direction per UI language, for languages whose users are
+#: better served by something other than :data:`DEFAULT_CONVERSION`.  Keys are
+#: normalised language codes (lower case, ``_`` separator); matching is exact.
+#:
+#: Simplified-Chinese locales default to Traditional -> Simplified: ``tw2sp``
+#: rather than plain ``t2s`` because it also normalises Taiwan variant forms
+#: and maps Taiwanese vocabulary back (軟體 -> 软件), and is no worse than
+#: ``t2s`` on non-Taiwan traditional text.  Hong Kong/Macau locales fall back
+#: to plain ``s2t`` because the Taiwan-specific variants and vocabulary would
+#: be wrong there and the ``hk`` configurations are not (yet) exposed.
+#:
+#: Bare ``zh`` is what NVDA reports for Chinese variants it ships no
+#: translation for (e.g. a Windows display language of zh_SG/zh_CHS): it then
+#: falls back to the zh_CN catalogue, so the interface the user actually sees
+#: is Simplified Chinese and the Simplified default applies.
+_LANGUAGE_DEFAULTS: "dict[str, str]" = {
+	"zh": "tw2sp",
+	"zh_cn": "tw2sp",
+	"zh_sg": "tw2sp",
+	"zh_hk": "s2t",
+	"zh_mo": "s2t",
+}
+
+
+def default_for_language(language: "str | None") -> str:
+	"""Return the default conversion direction for a UI language code.
+
+	:param language: a language code such as ``zh_CN``, ``zh-TW`` or ``en``
+		(case-insensitive, ``-``/``_`` interchangeable), or ``None``.
+	:returns: one of :data:`CONVERSION_CODES`; :data:`DEFAULT_CONVERSION` for
+		unknown or missing languages.
+	"""
+	if not language:
+		return DEFAULT_CONVERSION
+	normalized = language.strip().lower().replace("-", "_")
+	return _LANGUAGE_DEFAULTS.get(normalized, DEFAULT_CONVERSION)
+
+
 #: Maps each supported conversion to its reverse direction, used by the
 #: "swap direction" command.  Every supported code has exactly one reverse, and
 #: reversing twice yields the original (the mapping is an involution).  Phrase

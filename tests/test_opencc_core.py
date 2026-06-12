@@ -96,6 +96,43 @@ def test_default_conversion_is_s2twp():
 	assert opencc_core.convert("内存") == "記憶體"
 
 
+@pytest.mark.parametrize(
+	"language, expected",
+	[
+		# Simplified-Chinese locales default to Traditional -> Simplified.
+		("zh_CN", "tw2sp"),
+		("zh_SG", "tw2sp"),
+		# Bare "zh" is NVDA's fallback for unshipped Chinese variants; the UI it
+		# shows is then Simplified Chinese (zh_CN catalogue).
+		("zh", "tw2sp"),
+		# Hong Kong/Macau get plain s2t (no Taiwan variants or vocabulary).
+		("zh_HK", "s2t"),
+		("zh_MO", "s2t"),
+		# Taiwan and everything else keep the global default.
+		("zh_TW", "s2twp"),
+		("en", "s2twp"),
+		("ja", "s2twp"),
+		# Normalisation: case-insensitive, - and _ interchangeable.
+		("ZH-cn", "tw2sp"),
+		("zh-HK", "s2t"),
+		# Missing/unknown languages fall back to the default.
+		(None, "s2twp"),
+		("", "s2twp"),
+		("klingon", "s2twp"),
+	],
+)
+def test_default_for_language(language, expected):
+	result = opencc_core.default_for_language(language)
+	print(f"default_for_language({language!r}) -> {result}")
+	assert result == expected
+
+
+def test_language_defaults_are_supported_directions():
+	"""Every per-language default must be a direction the add-on exposes."""
+	for language, code in opencc_core._LANGUAGE_DEFAULTS.items():
+		assert opencc_core.is_supported(code), (language, code)
+
+
 def test_unsupported_conversion_raises():
 	with pytest.raises(ValueError):
 		opencc_core.convert("测试", "does-not-exist")
