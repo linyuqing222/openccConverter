@@ -156,7 +156,10 @@ jobs:
           Do not modify any file inside the repository.
           EOF
           )
-          claude -p "$prompt" --allowedTools 'Read,Glob,Grep,Write(//home/runner/work/_temp/**)'
+          # --add-dir is required as well: file tools only reach the working
+          # directory tree by default, and RUNNER_TEMP lives outside it.
+          claude -p "$prompt" --add-dir "$RUNNER_TEMP" \
+            --allowedTools 'Read,Glob,Grep,Write(//home/runner/work/_temp/**)'
       - name: Apply the translation to nvda.po
         id: apply
         if: ${{ steps.po.outputs.needed == 'true' && steps.translate.outcome == 'success' }}
