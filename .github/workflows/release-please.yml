@@ -70,12 +70,11 @@ jobs:
   sync-changelog:
     needs: release-please
     runs-on: ubuntu-latest
-    # claude-code-action needs id-token; a job-level permissions block replaces
-    # the workflow-level grant, so contents: write must be re-declared here.
+    # A job-level permissions block replaces the workflow-level grant, so
+    # contents: write must be re-declared here.
     permissions:
       contents: write
       pull-requests: read
-      id-token: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -122,33 +121,42 @@ jobs:
             echo "needed=true" >> "$GITHUB_OUTPUT"
             python3 scripts/sync_addon_changelog.py --dry-run > "$RUNNER_TEMP/changelog_en.txt"
           fi
+      # claude-code-action does not run on push-triggered workflows
+      # ("Unsupported event type: push"), so call the Claude CLI in headless
+      # mode instead. The changelog text derives from PR titles, i.e.
+      # untrusted input, so treat the model as injectable: Write is scoped to
+      # the runner temp dir (RUNNER_TEMP on hosted runners) and the apply step
+      # additionally resets the workspace before executing anything from it.
+      # The CLI install lives inside this step so an install failure is also
+      # absorbed by continue-on-error rather than failing the job.
       - name: Translate the changelog to zh_TW with Claude
         id: translate
         if: ${{ steps.po.outputs.needed == 'true' }}
         continue-on-error: true
-        uses: anthropics/claude-code-action@v1
-        with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          # The changelog text derives from PR titles, i.e. untrusted input, so
-          # treat the model as injectable: Write is scoped to the runner temp
-          # dir (RUNNER_TEMP on hosted runners) and the apply step additionally
-          # resets the workspace before executing anything from it.
-          claude_args: '--allowedTools "Read,Glob,Grep,Write(//home/runner/work/_temp/**)"'
-          prompt: |
-            Translate the NVDA add-on store changelog at
-            ${{ runner.temp }}/changelog_en.txt into Traditional Chinese (Taiwan, 臺灣正體中文).
-            Rules:
-            - Translate line by line: the output must have exactly the same number of
-              lines as the input, with the same "- " bullet prefixes preserved.
-            - Keep version numbers and dates (e.g. "2.0.0 (2026-06-10)") unchanged.
-            - Use half-width parentheses with a single space before "(", matching the
-              existing style in addon/locale/zh_TW/LC_MESSAGES/nvda.po.
-            - Keep terminology and punctuation consistent with the existing msgstr
-              translations in addon/locale/zh_TW/LC_MESSAGES/nvda.po and with
-              addon/doc/zh_TW/readme.md.
-            Write ONLY the translated plain text (no commentary, no code fences) to
-            ${{ runner.temp }}/changelog_zh_TW.txt using the Write tool.
-            Do not modify any file inside the repository.
+        timeout-minutes: 10
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash
+          export PATH="$HOME/.local/bin:$PATH"
+          prompt=$(cat <<EOF
+          Translate the NVDA add-on store changelog at
+          $RUNNER_TEMP/changelog_en.txt into Traditional Chinese (Taiwan, 臺灣正體中文).
+          Rules:
+          - Translate line by line: the output must have exactly the same number of
+            lines as the input, with the same "- " bullet prefixes preserved.
+          - Keep version numbers and dates (e.g. "2.0.0 (2026-06-10)") unchanged.
+          - Use half-width parentheses with a single space before "(", matching the
+            existing style in addon/locale/zh_TW/LC_MESSAGES/nvda.po.
+          - Keep terminology and punctuation consistent with the existing msgstr
+            translations in addon/locale/zh_TW/LC_MESSAGES/nvda.po and with
+            addon/doc/zh_TW/readme.md.
+          Write ONLY the translated plain text (no commentary, no code fences) to
+          $RUNNER_TEMP/changelog_zh_TW.txt using the Write tool.
+          Do not modify any file inside the repository.
+          EOF
+          )
+          claude -p "$prompt" --allowedTools 'Read,Glob,Grep,Write(//home/runner/work/_temp/**)'
       - name: Apply the translation to nvda.po
         id: apply
         if: ${{ steps.po.outputs.needed == 'true' && steps.translate.outcome == 'success' }}
