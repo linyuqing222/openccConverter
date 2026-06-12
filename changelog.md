@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/linyuqing222/openccConverter/compare/v2.1.0...v2.2.0) (2026-06-12)
+
+
+### Features
+
+* pick the default conversion direction from NVDA's UI language ([#15](https://github.com/linyuqing222/openccConverter/issues/15)) ([10c2c17](https://github.com/linyuqing222/openccConverter/commit/10c2c175e19f43d82c372cf70b3068fbd475473f))
+
 ## [2.1.0](https://github.com/linyuqing222/openccConverter/compare/v2.0.0...v2.1.0) (2026-06-12)
 
 
