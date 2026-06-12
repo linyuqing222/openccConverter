@@ -38,6 +38,17 @@ jobs:
     - name: building addon
       run: uv run scons && uv run scons pot
 
+    # scripts/update_po_changelog.py finds the changelog entry by its extracted
+    # comment (sourced from buildVars.py). If that wording drifts the script
+    # silently falls back to English at release time; fail loudly here instead.
+    - name: Verify the changelog translation anchor survives in the .pot
+      run: |
+        anchor="$(python3 -c 'import sys; sys.path.insert(0, "scripts"); import update_po_changelog as u; print(u.ANCHOR)')"
+        grep -qF "$anchor" ./*.pot || {
+          echo "::error title=changelog anchor missing::scripts/update_po_changelog.py ANCHOR ($anchor) is no longer in the .pot; re-sync it with the comment above addon_changelog in buildVars.py."
+          exit 1
+        }
+
     - uses: actions/upload-artifact@v7
       with:
         name: packaged_addon

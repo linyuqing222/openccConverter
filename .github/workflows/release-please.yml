@@ -70,11 +70,21 @@ jobs:
   sync-changelog:
     needs: release-please
     runs-on: ubuntu-latest
+    # claude-code-action needs id-token; a job-level permissions block replaces
+    # the workflow-level grant, so contents: write must be re-declared here.
+    permissions:
+      contents: write
+      pull-requests: read
+      id-token: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Configure git identity
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
       - name: Find the open release PR
         id: pr
         env:
@@ -92,7 +102,81 @@ jobs:
           git switch "$BRANCH"
           python3 scripts/sync_addon_changelog.py
           git diff --quiet -- buildVars.py && exit 0
-          git config user.name  'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git commit -am 'chore: sync addon_changelog with changelog.md'
           git push origin "$BRANCH"
+
+      # The store shows addon_changelog through gettext, which needs the zh_TW
+      # .po entry's msgid to match the current English text exactly, so each
+      # release needs a fresh translation. Claude only produces the translated
+      # plain text (written outside the repo); scripts/update_po_changelog.py
+      # owns all .po edits and recomputes the msgid itself. Failures here are
+      # surfaced as a warning, never block the English sync (the store then
+      # falls back to English, the status quo), and retry on the next push.
+      - name: Check whether the zh_TW changelog translation is current
+        id: po
+        if: ${{ steps.pr.outputs.branch != '' }}
+        run: |
+          if python3 scripts/update_po_changelog.py --check; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+            python3 scripts/sync_addon_changelog.py --dry-run > "$RUNNER_TEMP/changelog_en.txt"
+          fi
+      - name: Translate the changelog to zh_TW with Claude
+        id: translate
+        if: ${{ steps.po.outputs.needed == 'true' }}
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The changelog text derives from PR titles, i.e. untrusted input, so
+          # treat the model as injectable: Write is scoped to the runner temp
+          # dir (RUNNER_TEMP on hosted runners) and the apply step additionally
+          # resets the workspace before executing anything from it.
+          claude_args: '--allowedTools "Read,Glob,Grep,Write(//home/runner/work/_temp/**)"'
+          prompt: |
+            Translate the NVDA add-on store changelog at
+            ${{ runner.temp }}/changelog_en.txt into Traditional Chinese (Taiwan, 臺灣正體中文).
+            Rules:
+            - Translate line by line: the output must have exactly the same number of
+              lines as the input, with the same "- " bullet prefixes preserved.
+            - Keep version numbers and dates (e.g. "2.0.0 (2026-06-10)") unchanged.
+            - Use half-width parentheses with a single space before "(", matching the
+              existing style in addon/locale/zh_TW/LC_MESSAGES/nvda.po.
+            - Keep terminology and punctuation consistent with the existing msgstr
+              translations in addon/locale/zh_TW/LC_MESSAGES/nvda.po and with
+              addon/doc/zh_TW/readme.md.
+            Write ONLY the translated plain text (no commentary, no code fences) to
+            ${{ runner.temp }}/changelog_zh_TW.txt using the Write tool.
+            Do not modify any file inside the repository.
+      - name: Apply the translation to nvda.po
+        id: apply
+        if: ${{ steps.po.outputs.needed == 'true' && steps.translate.outcome == 'success' }}
+        continue-on-error: true
+        env:
+          BRANCH: ${{ steps.pr.outputs.branch }}
+        run: |
+          # Don't trust the workspace after the model ran against untrusted
+          # changelog content: discard any stray change before executing repo
+          # scripts and committing (the translation file lives outside it).
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::warning title=workspace modified during translation::discarding stray changes"
+            git restore .
+            git clean -fdq
+          fi
+          sudo apt-get update -y && sudo apt-get install -y gettext
+          test -s "$RUNNER_TEMP/changelog_zh_TW.txt"
+          python3 scripts/update_po_changelog.py --apply "$RUNNER_TEMP/changelog_zh_TW.txt"
+          msgfmt --check --output-file=/dev/null addon/locale/zh_TW/LC_MESSAGES/nvda.po
+          git add addon/locale/zh_TW/LC_MESSAGES/nvda.po
+          git diff --cached --quiet && exit 0
+          git commit -m 'chore: translate addon_changelog to zh_TW'
+          git push origin "$BRANCH"
+      - name: Surface translation failure
+        if: >-
+          steps.po.outputs.needed == 'true' &&
+          (steps.translate.outcome != 'success' || steps.apply.outcome != 'success')
+        run: >-
+          echo "::warning title=zh_TW changelog translation failed::The store
+          changelog will fall back to English; the job retries on the next push
+          to main."
