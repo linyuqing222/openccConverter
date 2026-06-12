@@ -31,7 +31,7 @@ pure-Python OpenCC engine; no internet connection is required."""),
 	# Bumped automatically by release-please via the `x-release-please-version`
 	# annotation; keep the version literal on the line below.
 	addon_version="2.0.0",  # x-release-please-version
-	# Brief changelog for this version
+	# Brief changelog for this version (anchor for scripts/update_po_changelog.py — keep this wording)
 	# Translators: what's new content for the add-on version to be shown in the add-on store
 	addon_changelog=_("""2.0.0 (2026-06-10)
 ⚠ BREAKING CHANGES:
