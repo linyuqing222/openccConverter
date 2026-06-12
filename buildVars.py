@@ -33,11 +33,9 @@ pure-Python OpenCC engine; no internet connection is required."""),
 	addon_version="2.2.0",  # x-release-please-version
 	# Brief changelog for this version (anchor for scripts/update_po_changelog.py — keep this wording)
 	# Translators: what's new content for the add-on version to be shown in the add-on store
-	addon_changelog=_("""2.1.0 (2026-06-12)
+	addon_changelog=_("""2.2.0 (2026-06-12)
 Features:
-- auto-translate the store changelog to zh_TW
-Bug Fixes:
-- remove extra trailing newline in Claude workflow files"""),
+- pick the default conversion direction from NVDA's UI language"""),
 	# Author(s)
 	addon_author="Kevin Lin <kevin82222@gmail.com>",
 	# URL for the add-on documentation support
