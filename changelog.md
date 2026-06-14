@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.0](https://github.com/linyuqing222/openccConverter/compare/v2.0.0...v2.1.0) (2026-06-12)
+
+
+### Features
+
+* auto-translate the store changelog to zh_TW ([#13](https://github.com/linyuqing222/openccConverter/issues/13)) ([09cd565](https://github.com/linyuqing222/openccConverter/commit/09cd5654b6854aebe9ceb4a226503e2c78da0b43))
+* pick the default conversion direction from NVDA's UI language ([#15](https://github.com/linyuqing222/openccConverter/issues/15)) ([10c2c17](https://github.com/linyuqing222/openccConverter/commit/10c2c175e19f43d82c372cf70b3068fbd475473f))
+
+
+### Bug Fixes
+
+* remove extra trailing newline in Claude workflow files ([#11](https://github.com/linyuqing222/openccConverter/issues/11)) ([73cee14](https://github.com/linyuqing222/openccConverter/commit/73cee142dc82bcb647bc6dbe7d6810500c43ed95))
+
 ## [2.0.0](https://github.com/linyuqing222/openccConverter/compare/v1.0.1...v2.0.0) (2026-06-10)
 
 
