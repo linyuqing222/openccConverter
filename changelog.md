@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/linyuqing222/openccConverter/compare/v2.1.0...v2.1.1) (2026-11-23)
+
+
+### Bug Fixes
+
+* never spawn processes for large conversions ([#24](https://github.com/linyuqing222/openccConverter/issues/24)) ([9b2f8c0](https://github.com/linyuqing222/openccConverter/commit/9b2f8c0ca5a5725711348fd3671ac4fa9694df52))
+
 ## [2.1.0](https://github.com/linyuqing222/openccConverter/compare/v2.0.0...v2.1.0) (2026-06-12)
 
 
