@@ -94,6 +94,12 @@ def _ensure_multiprocessing() -> None:
 _ensure_multiprocessing()
 
 from opencc_purepy import OpenCC  # noqa: E402  (import after sys.path injection)
+import opencc_purepy.core as _engine_core  # noqa: E402
+
+# Always run the engine's "parallel" path serially, even when the runtime does
+# ship ``multiprocessing``: a real Pool spawns ``sys.executable``, which inside
+# NVDA is nvda.exe (uiAccess manifest), and fails with WinError 740.
+_engine_core.Pool = _SerialPool
 
 
 #: The conversion directions exposed to the user, in the order they should

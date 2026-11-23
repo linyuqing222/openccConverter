@@ -182,3 +182,14 @@ def test_serial_pool_runs_work_serially():
 	other.close()
 	other.join()
 	other.terminate()
+
+
+def test_engine_never_spawns_processes():
+	"""The engine must use the serial Pool even when multiprocessing exists.
+
+	A real Pool spawns sys.executable, i.e. nvda.exe, which fails with
+	WinError 740 (elevation required).
+	"""
+	import opencc_purepy.core
+
+	assert opencc_purepy.core.Pool is opencc_core._SerialPool
